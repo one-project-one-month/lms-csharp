@@ -18,4 +18,10 @@ public interface IUserRepository
     List<UsersViewModels> GetStudent(string id);
 
     List<UsersViewModels> GetInstructor(string id);
+    
+    UsersViewModels UpdateUser(string id, UsersViewModels user);
+
+    UsersViewModels PatchUser(string id, UsersViewModels user);
+
+    public bool? DeleteUser(string id);
 }

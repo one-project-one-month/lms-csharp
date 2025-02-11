@@ -65,5 +65,47 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
 
             return Ok(items);
         }
+
+        [HttpPatch("UpdateUser/{id}")]
+        public IActionResult UpdateUser(string id,UsersViewModels user)
+        {
+            
+            var item = _userRepository.UpdateUser(id,user);
+
+            // need to write reponse & request
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok(item);
+        }
+
+        [HttpPatch("PatchUser/{id}")]
+        public IActionResult PatchUser(string id, UsersViewModels user)
+        {
+
+            var item = _userRepository.PatchUser(id, user);
+
+            // need to write reponse & request
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok(item);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(string id)
+        {
+            var item = _userRepository.DeleteUser(id);
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok("Deleting success");
+        }
     }
 }
