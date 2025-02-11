@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningManagementSystem.DataBase", "LearningManagementSystem.DataBase\LearningManagementSystem.DataBase.csproj", "{69792CB0-2F30-46E8-B6FA-3326C3BB432A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningManagementSystem.Domain", "LearningManagementSystem.Domain\LearningManagementSystem.Domain.csproj", "{ABAF40F1-D1F6-4106-8F72-E37BE6BC13D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +24,14 @@ Global
 		{40B0842C-8AAA-44B1-B4AA-9638580AE134}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40B0842C-8AAA-44B1-B4AA-9638580AE134}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40B0842C-8AAA-44B1-B4AA-9638580AE134}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69792CB0-2F30-46E8-B6FA-3326C3BB432A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69792CB0-2F30-46E8-B6FA-3326C3BB432A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69792CB0-2F30-46E8-B6FA-3326C3BB432A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69792CB0-2F30-46E8-B6FA-3326C3BB432A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABAF40F1-D1F6-4106-8F72-E37BE6BC13D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABAF40F1-D1F6-4106-8F72-E37BE6BC13D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABAF40F1-D1F6-4106-8F72-E37BE6BC13D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABAF40F1-D1F6-4106-8F72-E37BE6BC13D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
