@@ -111,7 +111,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return new Category
             {
                 Category_Id = Guid.NewGuid(),
-                Category_Name = category.Category_Name,
+                Category_Name = category.name,
                 CreatedDate = category.CreatedDate,
                 UpdatedDate = category.UpdatedDate,
                 DeleteFlag = false
@@ -123,7 +123,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return new CategoryViewModels
             {
                 //Category_Id = category.Category_Id,
-                Category_Name = category.Category_Name,
+                name = category.Category_Name,
                 CreatedDate = category.CreatedDate,
                 UpdatedDate = category.UpdatedDate
                 //DeleteFlag = false
@@ -137,9 +137,9 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             {
                 item.Category_Id = Guid.Parse(id); // it`s guid
             }
-            if (!string.IsNullOrEmpty(category.Category_Name))
+            if (!string.IsNullOrEmpty(category.name))
             {
-                item.Category_Name = category.Category_Name;
+                item.Category_Name = category.name;
             }
             if (!string.IsNullOrEmpty(category.CreatedDate.ToString()))
             {

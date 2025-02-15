@@ -1,4 +1,5 @@
 using LearningManagementSystem.DataBase.Data;
+using LearningManagementSystem.Domain.Services.CategoryServices;
 using LearningManagementSystem.Domain.Services.UsersServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +20,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// I add some folders in here
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
