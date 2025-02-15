@@ -66,7 +66,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             return Ok(items);
         }
 
-        [HttpPatch("UpdateUser/{id}")]
+        [HttpPut("UpdateUser/{id}")]
         public IActionResult UpdateUser(string id,UsersViewModels user)
         {
             

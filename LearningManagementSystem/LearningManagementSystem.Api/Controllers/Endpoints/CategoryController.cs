@@ -1,0 +1,84 @@
+﻿using LearningManagementSystem.Domain.Services.CategoryServices;
+using LearningManagementSystem.Domain.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LearningManagementSystem.Api.Controllers.Endpoints
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoryController : ControllerBase
+    {
+        private readonly ICategoryRepository _categoryRepository;
+
+        public CategoryController(ICategoryRepository categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
+        [HttpGet("GetCategories")]
+        public IActionResult GetCategories()
+        {
+            var items = _categoryRepository.GetCategories();
+
+            return Ok(items);
+        }
+
+        [HttpGet("GetCategory/{id}")]
+        public IActionResult GetCategory(string id)
+        {
+            var items = _categoryRepository.GetCategory(id);
+
+            return Ok(items);
+        }
+
+        [HttpPost("CreateCategory")]
+        public IActionResult CreateCategory(CategoryViewModels user)
+        {
+            var items = _categoryRepository.CreateCategory(user);
+
+            return Ok(items);
+        }
+
+        [HttpPut("UpdateCategory/{id}")]
+        public IActionResult UpdateCategory(string id, CategoryViewModels user)
+        {
+
+            var item = _categoryRepository.UpdateCategory(id, user);
+
+            // need to write reponse & request
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok(item);
+        }
+
+        [HttpPatch("PatchCategory/{id}")]
+        public IActionResult PatchCategory(string id, CategoryViewModels user)
+        {
+
+            var item = _categoryRepository.PatchCategory(id, user);
+
+            // need to write reponse & request
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok(item);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCategory(string id)
+        {
+            var item = _categoryRepository.DeleteCategory(id);
+
+            if (item is null)
+            {
+                return BadRequest("Don`t have data");
+            }
+            return Ok("Deleting success");
+        }
+    }
+}

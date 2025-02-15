@@ -10,8 +10,4 @@
     <ProjectReference Include="..\LearningManagementSystem.DataBase\LearningManagementSystem.DataBase.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\CategoryServices\" />
-  </ItemGroup>
-
 </Project>
