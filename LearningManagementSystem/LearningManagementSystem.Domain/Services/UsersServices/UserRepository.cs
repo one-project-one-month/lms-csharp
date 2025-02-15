@@ -1,18 +1,19 @@
 ﻿using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.DataBase.Migrations;
-using LearningManagementSystem.DataBase.Models;
+using LearningManagementSystem.DataBase.Models.Users;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Users = LearningManagementSystem.DataBase.Models.Users;
+using Users = LearningManagementSystem.DataBase.Models.Users.Users;
 
 namespace LearningManagementSystem.Domain.Services.UsersServices;
 
@@ -41,7 +42,8 @@ public class UserRepository : IUserRepository
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.Role == "Instructor" && x.DeleteFlag == false)
+            .Where(x => // x.Role == "Instructor" && // need to check with roles
+            x.DeleteFlag == false)
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -53,7 +55,8 @@ public class UserRepository : IUserRepository
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.Role == "Student" && x.DeleteFlag == false)
+            .Where(x => //x.Role == "Student" && // need to check with roles
+            x.DeleteFlag == false)
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -65,8 +68,8 @@ public class UserRepository : IUserRepository
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.Role == "Instructor"
-            && x.DeleteFlag == false && x.UserId.ToString() == id) //I have proper reasons why I didn`t use Firstordefault.
+            .Where(x => //x.Role == "Instructor"&& // need to check with roles
+            x.DeleteFlag == false && x.id.ToString() == id) 
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -78,8 +81,7 @@ public class UserRepository : IUserRepository
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.Role == "Student"
-            && x.DeleteFlag == false && x.UserId.ToString() == id) //I have proper reasons why I didn`t use Firstordefault.
+            .Where(x => x.DeleteFlag == false && x.id.ToString() == id) // need to check with roles
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -91,7 +93,7 @@ public class UserRepository : IUserRepository
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.UserId.ToString() == id 
+            .FirstOrDefault(x => x.id.ToString() == id 
             && x.DeleteFlag == false);
         if (item is null) { return null; }
 
@@ -109,7 +111,7 @@ public class UserRepository : IUserRepository
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.UserId.ToString() == id 
+            .FirstOrDefault(x => x.id.ToString() == id
             && x.DeleteFlag == false);
         if (item is null) { return null; }
 
@@ -119,15 +121,14 @@ public class UserRepository : IUserRepository
         _db.SaveChanges();
 
         var model = UsersViewModelsMapping(item);
-        return user;
+        return model;
     }
-
 
     public bool? DeleteUser(string id)
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.UserId.ToString() == id 
+            .FirstOrDefault(x => x.id.ToString() == id 
             && x.DeleteFlag == false);
         if (item is null)
         {
@@ -142,20 +143,21 @@ public class UserRepository : IUserRepository
         return result > 0;
     }
 
-
     // Can use for instructor and students
     private static Users UsersMapping(UsersViewModels user)
     {
         return new Users
         {
-            UserId = Guid.NewGuid(),
-            Name = user.Name,
-            Email = user.Email,
-            PasswordHash = user.PasswordHash,
-            UserName = user.UserName,
-            Phone = user.Phone,
-            Address = user.Address,
-            Role = user.Role,
+            id = Guid.NewGuid(),
+            username = user.username,
+            email = user.email,
+            password = user.password,
+            phone = user.phone,
+            dob = user.dob,
+            address = user.address,
+            profile_photo = user.profile_photo,
+            role_id = user.role_id,
+            is_available = user.is_available,
             CreatedDate = user.CreatedDate,
             UpdatedDate = user.UpdatedDate,
             DeleteFlag = false
@@ -166,14 +168,17 @@ public class UserRepository : IUserRepository
     {
         return new UsersViewModels
         {
+
             //UserId = user.UserId,
-            Name = user.Name,
-            Email = user.Email,
-            PasswordHash = user.PasswordHash,
-            UserName = user.UserName,
-            Phone = user.Phone,
-            Address = user.Address,
-            Role = user.Role,
+            username = user.username,
+            email = user.email,
+            password = user.password,
+            phone = user.phone,
+            dob = user.dob,
+            address = user.address,
+            profile_photo = user.profile_photo,
+            role_id = user.role_id,
+            is_available = user.is_available,
             CreatedDate = user.CreatedDate,
             UpdatedDate = user.UpdatedDate
             //DeleteFlag = false
@@ -185,35 +190,43 @@ public class UserRepository : IUserRepository
 
         if (!string.IsNullOrEmpty(id))
         {
-            item.UserId = Guid.Parse(id); // it`s guid
+            item.id = Guid.Parse(id); // it`s guid
         }
-        if (!string.IsNullOrEmpty(user.UserName))
+        if (!string.IsNullOrEmpty(user.username))
         {
-            item.UserName = user.UserName;
+            item.username = user.username;
         }
-        if (!string.IsNullOrEmpty(user.Name))
+        if (!string.IsNullOrEmpty(user.email))
         {
-            item.Name = user.Name;
+            item.email = user.email;
         }
-        if (!string.IsNullOrEmpty(user.Email))
+        if (!string.IsNullOrEmpty(user.password))
         {
-            item.Email = user.Email;
+            item.password = user.password;
         }
-        if (!string.IsNullOrEmpty(user.PasswordHash))
+        if (!string.IsNullOrEmpty(user.phone))
         {
-            item.PasswordHash = user.PasswordHash;
+            item.phone = user.phone;
         }
-        if (!string.IsNullOrEmpty(user.Phone))
+        if (!string.IsNullOrEmpty(user.dob.ToString()))
         {
-            item.Phone = user.Phone;
+            item.dob = user.dob;
         }
-        if (!string.IsNullOrEmpty(user.Address))
+        if (!string.IsNullOrEmpty(user.address))
         {
-            item.Address = user.Address;
+            item.address = user.address;
         }
-        if (!string.IsNullOrEmpty(user.Role))
+        if (!string.IsNullOrEmpty(user.profile_photo))
         {
-            item.Role = user.Role;
+            item.profile_photo = user.profile_photo;
+        }
+        if (!string.IsNullOrEmpty(user.role_id))
+        {
+            item.role_id = user.role_id;
+        }
+        if (!string.IsNullOrEmpty(user.is_available.ToString()))
+        {
+            item.is_available = user.is_available;
         }
         if (!string.IsNullOrEmpty(user.CreatedDate.ToString()))
         {
