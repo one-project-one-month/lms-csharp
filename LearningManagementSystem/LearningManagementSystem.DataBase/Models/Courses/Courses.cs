@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace LearningManagementSystem.DataBase.Models.Courses
     public class Courses
     {
         [Key]
-        public Guid id { get; set; } = Guid.NewGuid();
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
+        //public Guid id { get; set; } = Guid.NewGuid();
         public Guid instructors_id { get; set; }
         public string courseName { get; set; } = null!;
         public string thumbnail { get; set; } = null!;

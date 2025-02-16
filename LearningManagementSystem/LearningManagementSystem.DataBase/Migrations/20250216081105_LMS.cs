@@ -15,7 +15,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Admins",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -30,22 +31,24 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Category",
                 columns: table => new
                 {
-                    Category_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Category_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeleteFlag = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Category_Id);
+                    table.PrimaryKey("PK_Category", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     instructors_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     courseName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -69,7 +72,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Enrollments",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     course_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     enrollment_date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -88,7 +92,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Instructors",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     nrc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     edu_background = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -105,7 +110,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Lessons",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     course_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     videoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -124,7 +130,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -139,7 +146,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Social_Links",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     course_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     facebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     X = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -159,7 +167,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -174,7 +183,8 @@ namespace LearningManagementSystem.DataBase.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),

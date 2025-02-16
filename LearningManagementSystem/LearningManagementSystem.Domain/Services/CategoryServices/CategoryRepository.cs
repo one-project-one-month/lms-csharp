@@ -39,11 +39,11 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return userViewModels;
         }
 
-        public List<CategoryViewModels> GetCategory(string id)
+        public List<CategoryViewModels> GetCategory(int id)
         {
             var model = _db.Category
                 .AsNoTracking()
-                .Where(x => x.DeleteFlag == false && x.Category_Id.ToString() == id) // need to check with roles
+                .Where(x => x.DeleteFlag == false && x.id == id) // need to check with roles
                 .ToList();
 
             var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
@@ -51,11 +51,11 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return userViewModels;
         }
 
-        public CategoryViewModels? UpdateCategory(string id, CategoryViewModels category)
+        public CategoryViewModels? UpdateCategory(int id, CategoryViewModels category)
         {
             var item = _db.Category
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Category_Id.ToString() == id
+                .FirstOrDefault(x => x.id == id
                 && x.DeleteFlag == false);
             if (item is null) { return null; }
 
@@ -69,11 +69,11 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return model;
         }
 
-        public CategoryViewModels? PatchCategory(string id, CategoryViewModels category)
+        public CategoryViewModels? PatchCategory(int id, CategoryViewModels category)
         {
             var item = _db.Category
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Category_Id.ToString() == id
+                .FirstOrDefault(x => x.id == id
                 && x.DeleteFlag == false);
             if (item is null) { return null; }
 
@@ -86,11 +86,11 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return model;
         }
 
-        public bool? DeleteCategory(string id)
+        public bool? DeleteCategory(int id)
         {
             var item = _db.Category
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Category_Id.ToString() == id
+                .FirstOrDefault(x => x.id == id
                 && x.DeleteFlag == false);
             if (item is null)
             {
@@ -110,8 +110,9 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         {
             return new Category
             {
-                Category_Id = Guid.NewGuid(),
-                Category_Name = category.name,
+                //id = Guid.NewGuid(),
+                id = 0,
+                name = category.name,
                 CreatedDate = category.CreatedDate,
                 UpdatedDate = category.UpdatedDate,
                 DeleteFlag = false
@@ -123,23 +124,24 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             return new CategoryViewModels
             {
                 //Category_Id = category.Category_Id,
-                name = category.Category_Name,
+                name = category.name,
                 CreatedDate = category.CreatedDate,
                 UpdatedDate = category.UpdatedDate
                 //DeleteFlag = false
             };
         }
 
-        private static Category UpdateCategoryDetails(string id, CategoryViewModels category, Category item)
+        private static Category UpdateCategoryDetails(int id, CategoryViewModels category, Category item)
         {
 
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id.ToString()))
             {
-                item.Category_Id = Guid.Parse(id); // it`s guid
+                //item.Category_Id = Guid.Parse(id);
+                item.id = id;
             }
             if (!string.IsNullOrEmpty(category.name))
             {
-                item.Category_Name = category.name;
+                item.name = category.name;
             }
             if (!string.IsNullOrEmpty(category.CreatedDate.ToString()))
             {

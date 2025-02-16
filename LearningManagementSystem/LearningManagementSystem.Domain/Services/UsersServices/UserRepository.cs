@@ -1,5 +1,5 @@
 ﻿using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Migrations;
+//using LearningManagementSystem.DataBase.Migrations;
 using LearningManagementSystem.DataBase.Models.Users;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -64,12 +64,12 @@ public class UserRepository : IUserRepository
         return userViewModels;
     }
 
-    public List<UsersViewModels> GetInstructor(string id)
+    public List<UsersViewModels> GetInstructor(int id)
     {
         var model = _db.Users
             .AsNoTracking()
             .Where(x => //x.Role == "Instructor"&& // need to check with roles
-            x.DeleteFlag == false && x.id.ToString() == id) 
+            x.DeleteFlag == false && x.id == id) 
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -77,11 +77,11 @@ public class UserRepository : IUserRepository
         return userViewModels;
     }
 
-    public List<UsersViewModels> GetStudent(string id)
+    public List<UsersViewModels> GetStudent(int id)
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.DeleteFlag == false && x.id.ToString() == id) // need to check with roles
+            .Where(x => x.DeleteFlag == false && x.id == id) // need to check with roles
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -89,11 +89,11 @@ public class UserRepository : IUserRepository
         return userViewModels;
     }
 
-    public UsersViewModels? UpdateUser(string id, UsersViewModels user)
+    public UsersViewModels? UpdateUser(int id, UsersViewModels user)
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.id.ToString() == id 
+            .FirstOrDefault(x => x.id == id 
             && x.DeleteFlag == false);
         if (item is null) { return null; }
 
@@ -107,11 +107,11 @@ public class UserRepository : IUserRepository
         return model;
     }
 
-    public UsersViewModels? PatchUser(string id, UsersViewModels user)
+    public UsersViewModels? PatchUser(int id, UsersViewModels user)
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.id.ToString() == id
+            .FirstOrDefault(x => x.id == id
             && x.DeleteFlag == false);
         if (item is null) { return null; }
 
@@ -124,11 +124,11 @@ public class UserRepository : IUserRepository
         return model;
     }
 
-    public bool? DeleteUser(string id)
+    public bool? DeleteUser(int id)
     {
         var item = _db.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.id.ToString() == id 
+            .FirstOrDefault(x => x.id == id 
             && x.DeleteFlag == false);
         if (item is null)
         {
@@ -148,7 +148,8 @@ public class UserRepository : IUserRepository
     {
         return new Users
         {
-            id = Guid.NewGuid(),
+            //id = Guid.NewGuid(), 
+            id =  0, 
             username = user.username,
             email = user.email,
             password = user.password,
@@ -185,12 +186,13 @@ public class UserRepository : IUserRepository
         };
     }
 
-    private static Users UpdateUserDetails(string id, UsersViewModels user, Users item)
+    private static Users UpdateUserDetails(int id, UsersViewModels user, Users item)
     {
 
-        if (!string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(id.ToString()))
         {
-            item.id = Guid.Parse(id); // it`s guid
+            item.id = id;
+            //item.id = Guid.Parse(id);
         }
         if (!string.IsNullOrEmpty(user.username))
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,9 @@ namespace LearningManagementSystem.DataBase.Models.Users;
 public class Users
 {
     [Key]
-    public Guid id { get; set; } = Guid.NewGuid();
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int id { get; set; }
+    //public Guid id { get; set; } = Guid.NewGuid();
     public string username { get; set; } = null!;
     [EmailAddress]
     public string email { get; set; } = null!;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace LearningManagementSystem.DataBase.Models.Enrollments
     public class Enrollments
     {
         [Key]
-        public Guid id { get; set; } = Guid.NewGuid();
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
+        //public Guid id { get; set; } = Guid.NewGuid();
         public Guid user_id { get; set; } = Guid.NewGuid();
         public Guid course_id { get; set; } = Guid.NewGuid();
         public DateTime enrollment_date { get; set; } = DateTime.UtcNow;

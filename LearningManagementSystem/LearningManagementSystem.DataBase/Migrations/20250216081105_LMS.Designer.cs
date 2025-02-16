@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearningManagementSystem.DataBase.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250215181419_LMS")]
+    [Migration("20250216081105_LMS")]
     partial class LMS
     {
         /// <inheritdoc />
@@ -27,9 +27,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Admins.Admins", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -50,13 +52,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Category.Category", b =>
                 {
-                    b.Property<Guid>("Category_Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Category_Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -67,16 +67,22 @@ namespace LearningManagementSystem.DataBase.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Category_Id");
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
 
                     b.ToTable("Category");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Courses.Courses", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -129,9 +135,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Enrollments.Enrollments", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -164,9 +172,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Instructors.Instructors", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -195,9 +205,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Lessons.Lessons", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -233,9 +245,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Roles.Roles", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -257,9 +271,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Social_Links.Social_Links", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -295,9 +311,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Students.Students", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -318,9 +336,11 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.Users.Users", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");

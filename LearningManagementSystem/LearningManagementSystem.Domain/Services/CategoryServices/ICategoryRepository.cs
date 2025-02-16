@@ -8,12 +8,12 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
 
         List<CategoryViewModels> GetCategories();
 
-        List<CategoryViewModels> GetCategory(string id);
+        List<CategoryViewModels> GetCategory(int id);
 
-        CategoryViewModels UpdateCategory(string id, CategoryViewModels category);
+        CategoryViewModels UpdateCategory(int id, CategoryViewModels category);
 
-        CategoryViewModels PatchCategory(string id, CategoryViewModels category);
+        CategoryViewModels PatchCategory(int id, CategoryViewModels category);
 
-        public bool? DeleteCategory(string id);
+        public bool? DeleteCategory(int id);
     }
 }

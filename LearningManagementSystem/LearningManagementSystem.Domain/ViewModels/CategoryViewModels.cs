@@ -11,7 +11,8 @@ namespace LearningManagementSystem.Domain.ViewModels
     public class CategoryViewModels
     {
         [JsonIgnore]
-        public Guid id { get; set; } = Guid.Empty!;
+        public int id { get; set; }
+        //public Guid id { get; set; } = Guid.Empty!;
         public string name { get; set; } = null!;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedDate { get; set; }

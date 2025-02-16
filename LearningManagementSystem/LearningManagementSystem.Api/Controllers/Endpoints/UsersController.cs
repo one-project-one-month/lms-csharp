@@ -5,7 +5,7 @@ using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.Domain.Services.UsersServices;
 using LearningManagementSystem.Domain.ViewModels;
-using LearningManagementSystem.DataBase.Migrations;
+//using LearningManagementSystem.DataBase.Migrations;
 
 namespace LearningManagementSystem.Api.Controllers.Endpoints
 {
@@ -43,7 +43,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpGet("GetStudent/{id}")]
-        public IActionResult GetStudent(string id)
+        public IActionResult GetStudent(int id)
         {
             var items = _userRepository.GetStudent(id);
 
@@ -51,7 +51,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpGet("GetInstructor/{id}")]
-        public IActionResult GetInstructor(string id)
+        public IActionResult GetInstructor(int id)
         {
             var items = _userRepository.GetInstructor(id);
 
@@ -67,7 +67,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public IActionResult UpdateUser(string id,UsersViewModels user)
+        public IActionResult UpdateUser(int id,UsersViewModels user)
         {
             
             var item = _userRepository.UpdateUser(id,user);
@@ -82,7 +82,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpPatch("PatchUser/{id}")]
-        public IActionResult PatchUser(string id, UsersViewModels user)
+        public IActionResult PatchUser(int id, UsersViewModels user)
         {
 
             var item = _userRepository.PatchUser(id, user);
@@ -97,7 +97,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(string id)
+        public IActionResult DeleteUser(int id)
         {
             var item = _userRepository.DeleteUser(id);
 

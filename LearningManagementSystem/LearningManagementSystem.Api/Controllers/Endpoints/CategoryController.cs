@@ -24,7 +24,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpGet("GetCategory/{id}")]
-        public IActionResult GetCategory(string id)
+        public IActionResult GetCategory(int id)
         {
             var items = _categoryRepository.GetCategory(id);
 
@@ -40,7 +40,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpPut("UpdateCategory/{id}")]
-        public IActionResult UpdateCategory(string id, CategoryViewModels user)
+        public IActionResult UpdateCategory(int id, CategoryViewModels user)
         {
 
             var item = _categoryRepository.UpdateCategory(id, user);
@@ -55,7 +55,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpPatch("PatchCategory/{id}")]
-        public IActionResult PatchCategory(string id, CategoryViewModels user)
+        public IActionResult PatchCategory(int id, CategoryViewModels user)
         {
 
             var item = _categoryRepository.PatchCategory(id, user);
@@ -70,7 +70,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(string id)
+        public IActionResult DeleteCategory(int id)
         {
             var item = _categoryRepository.DeleteCategory(id);
 

@@ -15,13 +15,13 @@ public interface IUserRepository
 
     List<UsersViewModels> GetInstructors();
 
-    List<UsersViewModels> GetStudent(string id);
+    List<UsersViewModels> GetStudent(int id);
 
-    List<UsersViewModels> GetInstructor(string id);
+    List<UsersViewModels> GetInstructor(int id);
     
-    UsersViewModels UpdateUser(string id, UsersViewModels user);
+    UsersViewModels UpdateUser(int id, UsersViewModels user);
 
-    UsersViewModels PatchUser(string id, UsersViewModels user);
+    UsersViewModels PatchUser(int id, UsersViewModels user);
 
-    public bool? DeleteUser(string id);
+    public bool? DeleteUser(int id);
 }
