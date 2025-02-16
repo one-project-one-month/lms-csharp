@@ -6,7 +6,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : BaseController
     {
         private readonly ICategoryRepository _categoryRepository;
 
@@ -37,6 +37,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             var items = _categoryRepository.CreateCategory(user);
 
             return Ok(items);
+            //return Execute(items);
         }
 
         [HttpPut("UpdateCategory/{id}")]

@@ -1,9 +1,12 @@
-﻿using LearningManagementSystem.Domain.ViewModels;
+﻿using LearningManagementSystem.Domain.Models;
+using LearningManagementSystem.Domain.ViewModels;
 
 namespace LearningManagementSystem.Domain.Services.CategoryServices
 {
     public interface ICategoryRepository
     {
+        Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
+
         CategoryViewModels CreateCategory(CategoryViewModels category);
 
         List<CategoryViewModels> GetCategories();

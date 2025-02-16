@@ -1,7 +1,9 @@
 ﻿using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.DataBase.Models.Category;
+using LearningManagementSystem.Domain.Models;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace LearningManagementSystem.Domain.Services.CategoryServices
 {
@@ -14,16 +16,58 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             _db = db;
         }
 
+        public Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category)
+        {
+            try
+            {
+                category.UpdatedDate = null; // Need to amend and take out
+
+                var model = CategoryMapping(category);
+
+                _db.Category.Add(model);
+                _db.SaveChanges();
+
+                var item = new CategoryResponseModel()
+                {
+                    Category = category
+                };
+
+                var result = Result<CategoryResponseModel>
+                    .Success(item, "Category created successfully.");
+
+                return result;
+            }
+            catch (ValidationException ex)
+            {
+                return Result<CategoryResponseModel>.ValidationError("Validation Error: " + ex.Message);
+            }
+            catch (SystemException ex)
+            {
+                return Result<CategoryResponseModel>.SystemError("System Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Result<CategoryResponseModel>.Error("An unexpected error occurred: " + ex.Message);
+            }
+        }
+
         public CategoryViewModels CreateCategory(CategoryViewModels category)
         {
-            category.UpdatedDate = null; // Need to amend and take out
+            try
+            {
+                category.UpdatedDate = null; // Need to amend and take out
 
-            var model = CategoryMapping(category);
+                var model = CategoryMapping(category);
 
-            _db.Category.Add(model);
-            _db.SaveChanges();
+                _db.Category.Add(model);
+                _db.SaveChanges();
 
-            return category;
+                return category;
+            }
+            catch 
+            {
+                throw;
+            }
         }
 
         public List<CategoryViewModels> GetCategories()
