@@ -1,5 +1,6 @@
 using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.Domain.Services.CategoryServices;
+using LearningManagementSystem.Domain.Services.StudentsServieces;
 using LearningManagementSystem.Domain.Services.UsersServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<StudentRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 var app = builder.Build();
 
