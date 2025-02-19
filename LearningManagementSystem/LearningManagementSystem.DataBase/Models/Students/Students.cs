@@ -14,7 +14,7 @@ namespace LearningManagementSystem.DataBase.Models.Students
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         //public Guid id { get; set; } = Guid.NewGuid();
-        public Guid user_id { get; set; }
+        public int user_id { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedDate { get; set; }
         public bool DeleteFlag { get; set; } = false;

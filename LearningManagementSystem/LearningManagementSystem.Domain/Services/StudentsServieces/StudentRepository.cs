@@ -1,4 +1,5 @@
 ﻿using LearningManagementSystem.DataBase.Data;
+using LearningManagementSystem.DataBase.Models.Students;
 using LearningManagementSystem.DataBase.Models.Users;
 using LearningManagementSystem.Domain.ViewModels;
 
@@ -15,14 +16,25 @@ public class StudentRepository : IStudentRepository
 
     public UsersViewModels CreateStudent(UsersViewModels student)
     {
-        var StudentModel = StudentMapping(student);
-        var model = _db.Users.Add(StudentModel);
+        var userModel = UserMapping(student);
+
+        var model = _db.Users.Add(userModel);
+        _db.SaveChanges();
+
+        int userId = userModel.id;
+
+        var studentModel = new Students
+        {
+            user_id = userId
+        };
+
+        var result = _db.Students.Add(studentModel);
         _db.SaveChanges();
 
         return student;
     }
 
-    private static Users StudentMapping(UsersViewModels user)
+    private static Users UserMapping(UsersViewModels user)
     {
         return new Users
         {
