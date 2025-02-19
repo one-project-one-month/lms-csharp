@@ -10,12 +10,14 @@ namespace LearningManagementSystem.Domain.ViewModels
 {
     public class CategoryViewModels
     {
+        //public Guid id { get; set; } = Guid.Empty!;
+
         [JsonIgnore]
         public int id { get; set; }
-        //public Guid id { get; set; } = Guid.Empty!;
         public string name { get; set; } = null!;
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedDate { get; set; }
-        public bool DeleteFlag { get; set; } = false;
+        public DateTime created_at { get; set; }
+        public DateTime? updated_at { get; set; }
+        [JsonIgnore]
+        public bool isDeleted { get; set; } = false;
     }
 }

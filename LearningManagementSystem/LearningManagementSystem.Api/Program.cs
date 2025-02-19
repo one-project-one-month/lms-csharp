@@ -9,9 +9,38 @@ using System.Threading.Tasks.Dataflow;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString
-        ("DefaultConnection")));
+#region Read DB type from config and Default is MSSQL
+
+// Get database type from configuration (or environment variable)
+
+
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//        options.UseSqlServer(builder.Configuration
+//        .GetConnectionString("MSSQLConnection")));
+
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//        options.UseMySql(builder.Configuration
+//        .GetConnectionString("MySQLConnection"),
+//        ServerVersion.AutoDetect(builder.Configuration
+//        .GetConnectionString("MySQLConnection"))));
+
+var databaseType = builder.Configuration["DatabaseType"] ?? "MySQL"; // Default to MSSQL
+
+if (databaseType == "MSSQL")
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQLConnection")));
+}
+else
+if (databaseType == "MySQL")
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))));
+    // Please don`t delete server.AutoDetect
+}
+
+#endregion
 
 
 //Add services to the container.
@@ -26,6 +55,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+
+//builder.Services.AddTransient<IUserRepository, UserRepository>();
+//builder.Services.AddSingleton<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
