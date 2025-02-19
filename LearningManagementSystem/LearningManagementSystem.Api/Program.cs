@@ -24,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 //        ServerVersion.AutoDetect(builder.Configuration
 //        .GetConnectionString("MySQLConnection"))));
 
-var databaseType = builder.Configuration["DatabaseType"] ?? "MySQL"; // Default to MSSQL
+var databaseType = builder.Configuration["DatabaseType"] ?? "MSSQL"; // Default to MSSQL
 
 if (databaseType == "MSSQL")
 {

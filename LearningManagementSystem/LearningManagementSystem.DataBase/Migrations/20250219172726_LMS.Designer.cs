@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearningManagementSystem.DataBase.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250216220509_LMS")]
+    [Migration("20250219172726_LMS")]
     partial class LMS
     {
         /// <inheritdoc />
@@ -359,6 +359,38 @@ namespace LearningManagementSystem.DataBase.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.DataBase.Models.TblTokens", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("datetime");
+
+                    b.Property<ulong>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("token")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("user_id")
+                        .IsUnique();
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.TblUsers", b =>
                 {
                     b.Property<int>("id")
@@ -509,6 +541,17 @@ namespace LearningManagementSystem.DataBase.Migrations
                     b.Navigation("TblUser");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.DataBase.Models.TblTokens", b =>
+                {
+                    b.HasOne("LearningManagementSystem.DataBase.Models.TblUsers", "TblUser")
+                        .WithOne("Tokens")
+                        .HasForeignKey("LearningManagementSystem.DataBase.Models.TblTokens", "user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TblUser");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.DataBase.Models.TblUsers", b =>
                 {
                     b.HasOne("LearningManagementSystem.DataBase.Models.TblRoles", "TblRole")
@@ -553,6 +596,9 @@ namespace LearningManagementSystem.DataBase.Migrations
                     b.Navigation("TblInstructor");
 
                     b.Navigation("TblStudent");
+
+                    b.Navigation("Tokens")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

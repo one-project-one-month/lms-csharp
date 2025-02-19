@@ -197,5 +197,28 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
 
             return item;
         }
+
+        public TblTokens TokensCreate(TblTokens tokens)
+        {
+            try
+            {
+                tokens.updated_at = null; // Need to amend and take out
+
+                tokens.user_id = 1;
+                tokens.created_at = DateTime.UtcNow;
+                //tokens.TblUser = null;
+
+                //tokens.id = 1;
+
+                _db.Tokens.Add(tokens);
+                _db.SaveChanges();
+
+                return tokens;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LearningManagementSystem.DataBase.Migrations
 {
     /// <inheritdoc />
-    public partial class LMS_SQL : Migration
+    public partial class LMSMySQL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -154,6 +154,31 @@ namespace LearningManagementSystem.DataBase.Migrations
                     table.PrimaryKey("PK_Students", x => x.id);
                     table.ForeignKey(
                         name: "FK_Students_Users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Tokens",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    token = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    created_at = table.Column<DateTime>(type: "datetime", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    isDeleted = table.Column<ulong>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tokens", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Tokens_Users_user_id",
                         column: x => x.user_id,
                         principalTable: "Users",
                         principalColumn: "id",
@@ -351,6 +376,12 @@ namespace LearningManagementSystem.DataBase.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tokens_user_id",
+                table: "Tokens",
+                column: "user_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_role_id",
                 table: "Users",
                 column: "role_id");
@@ -373,6 +404,9 @@ namespace LearningManagementSystem.DataBase.Migrations
 
             migrationBuilder.DropTable(
                 name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Tokens");
 
             migrationBuilder.DropTable(
                 name: "Courses");

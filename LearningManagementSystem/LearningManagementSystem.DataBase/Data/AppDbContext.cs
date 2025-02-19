@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<TblLessons> Lessons { get; set; }
     public DbSet<TblSocial_Links> Social_Links { get; set; }
     public DbSet<TblRoles> Roles { get; set; }
+    public DbSet<TblTokens> Tokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,6 +37,13 @@ public class AppDbContext : DbContext
             .HasOne(s => s.TblUser)
             .WithOne(u => u.TblStudent)
             .HasForeignKey<TblStudents>(s => s.user_id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // One-to-One: User and Token
+        modelBuilder.Entity<TblTokens>()
+            .HasOne(s => s.TblUser)
+            .WithOne(u => u.Tokens)
+            .HasForeignKey<TblTokens>(s => s.user_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         // One-to-One: User and Admin
