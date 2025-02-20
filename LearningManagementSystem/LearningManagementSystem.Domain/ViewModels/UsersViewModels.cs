@@ -9,7 +9,7 @@ namespace LearningManagementSystem.Domain.ViewModels
 {
     public class UsersViewModels
     {
-        [JsonIgnore]
+        //[JsonIgnore]
         public int role_id { get; set; } // Validation Required for allow only student or instructor
         public string username { get; set; } = null!;
         public string email { get; set; } = null!;
@@ -23,5 +23,10 @@ namespace LearningManagementSystem.Domain.ViewModels
         public DateTime? updated_at { get; set; }
         [JsonIgnore]
         public bool isDeleted { get; set; } = false;
+
+        //Instructor
+        public string nrc { get; set; }
+        public string edu_background { get; set; }
     }
 }
+
