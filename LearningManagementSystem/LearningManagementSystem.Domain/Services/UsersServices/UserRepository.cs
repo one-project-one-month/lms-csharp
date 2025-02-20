@@ -1,6 +1,6 @@
 ﻿using LearningManagementSystem.DataBase.Data;
+
 //using LearningManagementSystem.DataBase.Migrations;
-using LearningManagementSystem.DataBase.Models.Users;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +13,7 @@ using System.Net;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Users = LearningManagementSystem.DataBase.Models.Users.Users;
+using TblUsers = LearningManagementSystem.DataBase.Models.TblUsers;
 
 namespace LearningManagementSystem.Domain.Services.UsersServices;
 
@@ -28,9 +28,9 @@ public class UserRepository : IUserRepository
 
     public UsersViewModels CreateUser(UsersViewModels user)
     {
-        user.UpdatedDate = null; // Need to amend and take out
+        user.updated_at = null; // Need to amend and take out
 
-        Users userModel = UsersMapping(user);
+        TblUsers userModel = UsersMapping(user);
 
         _db.Users.Add(userModel);
         _db.SaveChanges();
@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
         var model = _db.Users
             .AsNoTracking()
             .Where(x => // x.Role == "Instructor" && // need to check with roles
-            x.DeleteFlag == false)
+            x.isDeleted == false)
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
         var model = _db.Users
             .AsNoTracking()
             .Where(x => //x.Role == "Student" && // need to check with roles
-            x.DeleteFlag == false)
+            x.isDeleted == false)
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -69,7 +69,7 @@ public class UserRepository : IUserRepository
         var model = _db.Users
             .AsNoTracking()
             .Where(x => //x.Role == "Instructor"&& // need to check with roles
-            x.DeleteFlag == false && x.id == id) 
+            x.isDeleted == false && x.id == id) 
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -81,7 +81,7 @@ public class UserRepository : IUserRepository
     {
         var model = _db.Users
             .AsNoTracking()
-            .Where(x => x.DeleteFlag == false && x.id == id) // need to check with roles
+            .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
             .ToList();
 
         var userViewModels = model.Select(UsersViewModelsMapping).ToList();
@@ -94,7 +94,7 @@ public class UserRepository : IUserRepository
         var item = _db.Users
             .AsNoTracking()
             .FirstOrDefault(x => x.id == id 
-            && x.DeleteFlag == false);
+            && x.isDeleted == false);
         if (item is null) { return null; }
 
         item = UpdateUserDetails(id, user, item); // Updating Users info
@@ -112,7 +112,7 @@ public class UserRepository : IUserRepository
         var item = _db.Users
             .AsNoTracking()
             .FirstOrDefault(x => x.id == id
-            && x.DeleteFlag == false);
+            && x.isDeleted == false);
         if (item is null) { return null; }
 
         item = UpdateUserDetails(id, user, item); // Updating Users info
@@ -129,13 +129,13 @@ public class UserRepository : IUserRepository
         var item = _db.Users
             .AsNoTracking()
             .FirstOrDefault(x => x.id == id 
-            && x.DeleteFlag == false);
+            && x.isDeleted == false);
         if (item is null)
         {
             return null;
         }
 
-        item.DeleteFlag = true;
+        item.isDeleted = true;
 
         _db.Entry(item).State = EntityState.Modified;
         var result = _db.SaveChanges();
@@ -144,9 +144,9 @@ public class UserRepository : IUserRepository
     }
 
     // Can use for instructor and students
-    private static Users UsersMapping(UsersViewModels user)
+    private static TblUsers UsersMapping(UsersViewModels user)
     {
-        return new Users
+        return new TblUsers
         {
             //id = Guid.NewGuid(), 
             id =  0, 
@@ -159,13 +159,13 @@ public class UserRepository : IUserRepository
             profile_photo = user.profile_photo,
             role_id = user.role_id,
             is_available = user.is_available,
-            CreatedDate = user.CreatedDate,
-            UpdatedDate = user.UpdatedDate,
-            DeleteFlag = false
+            created_at = user.created_at,
+            updated_at = user.updated_at,
+            isDeleted = false
         };
     }
 
-    private static UsersViewModels UsersViewModelsMapping(Users user)
+    private static UsersViewModels UsersViewModelsMapping(TblUsers user)
     {
         return new UsersViewModels
         {
@@ -180,19 +180,23 @@ public class UserRepository : IUserRepository
             profile_photo = user.profile_photo,
             role_id = user.role_id,
             is_available = user.is_available,
-            CreatedDate = user.CreatedDate,
-            UpdatedDate = user.UpdatedDate
-            //DeleteFlag = false
+            created_at = user.created_at,
+            updated_at = user.updated_at
+            //isDeleted = false
         };
     }
 
-    private static Users UpdateUserDetails(int id, UsersViewModels user, Users item)
+    private static TblUsers UpdateUserDetails(int id, UsersViewModels user, TblUsers item)
     {
 
         if (!string.IsNullOrEmpty(id.ToString()))
         {
             item.id = id;
             //item.id = Guid.Parse(id);
+        }
+        if (!string.IsNullOrEmpty(user.role_id.ToString()))
+        {
+            item.role_id = user.role_id;
         }
         if (!string.IsNullOrEmpty(user.username))
         {
@@ -222,20 +226,16 @@ public class UserRepository : IUserRepository
         {
             item.profile_photo = user.profile_photo;
         }
-        if (!string.IsNullOrEmpty(user.role_id))
-        {
-            item.role_id = user.role_id;
-        }
         if (!string.IsNullOrEmpty(user.is_available.ToString()))
         {
             item.is_available = user.is_available;
         }
-        if (!string.IsNullOrEmpty(user.CreatedDate.ToString()))
+        if (!string.IsNullOrEmpty(user.created_at.ToString()))
         {
-            item.CreatedDate = user.CreatedDate;
+            item.created_at = user.created_at;
         }
 
-        item.UpdatedDate = DateTime.Now; // Need to update everytime
+        item.updated_at = DateTime.Now; // Need to update everytime
         
         return item;
     }

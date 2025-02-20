@@ -1,6 +1,8 @@
-﻿using LearningManagementSystem.Domain.Services.CategoryServices;
+﻿using LearningManagementSystem.DataBase.Models;
+using LearningManagementSystem.Domain.Services.CategoryServices;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+//using LearningManagementSystem.DataBase.Migrations;
 
 namespace LearningManagementSystem.Api.Controllers.Endpoints
 {
@@ -80,6 +82,16 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
                 return BadRequest("Don`t have data");
             }
             return Ok("Deleting success");
+        }
+
+
+        [HttpPost("Token_Test")]
+        public IActionResult Token_Test(TblTokens tokens)
+        {
+            var items = _categoryRepository.TokensCreate(tokens);
+
+            return Ok(items);
+            //return Execute(items);
         }
     }
 }
