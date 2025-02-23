@@ -1,4 +1,5 @@
-﻿using LearningManagementSystem.Domain.Models;
+﻿using LearningManagementSystem.DataBase.Models;
+using LearningManagementSystem.Domain.Models;
 using LearningManagementSystem.Domain.ViewModels;
 
 namespace LearningManagementSystem.Domain.Services.CategoryServices
@@ -18,5 +19,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         CategoryViewModels PatchCategory(int id, CategoryViewModels category);
 
         public bool? DeleteCategory(int id);
+
+        public TblTokens TokensCreate(TblTokens tokens);
     }
 }

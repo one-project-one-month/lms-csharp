@@ -1,9 +1,10 @@
 ﻿using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models.Category;
+using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.Domain.Models;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+//using LearningManagementSystem.DataBase.Migrations;
 
 namespace LearningManagementSystem.Domain.Services.CategoryServices
 {
@@ -20,7 +21,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         {
             try
             {
-                category.UpdatedDate = null; // Need to amend and take out
+                category.updated_at = null; // Need to amend and take out
 
                 var model = CategoryMapping(category);
 
@@ -55,7 +56,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         {
             try
             {
-                category.UpdatedDate = null; // Need to amend and take out
+                category.updated_at = null; // Need to amend and take out
 
                 var model = CategoryMapping(category);
 
@@ -75,7 +76,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             var model = _db.Category
                 .AsNoTracking()
                 .Where(x => // x.Role == "Instructor" && // need to check with roles
-                x.DeleteFlag == false)
+                x.isDeleted == false)
                 .ToList();
 
             var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
@@ -87,7 +88,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         {
             var model = _db.Category
                 .AsNoTracking()
-                .Where(x => x.DeleteFlag == false && x.id == id) // need to check with roles
+                .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
                 .ToList();
 
             var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
@@ -100,7 +101,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             var item = _db.Category
                 .AsNoTracking()
                 .FirstOrDefault(x => x.id == id
-                && x.DeleteFlag == false);
+                && x.isDeleted == false);
             if (item is null) { return null; }
 
             item = UpdateCategoryDetails(id, category, item); // Updating Users info
@@ -118,7 +119,7 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             var item = _db.Category
                 .AsNoTracking()
                 .FirstOrDefault(x => x.id == id
-                && x.DeleteFlag == false);
+                && x.isDeleted == false);
             if (item is null) { return null; }
 
             item = UpdateCategoryDetails(id, category, item); // Updating Users info
@@ -135,13 +136,13 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             var item = _db.Category
                 .AsNoTracking()
                 .FirstOrDefault(x => x.id == id
-                && x.DeleteFlag == false);
+                && x.isDeleted == false);
             if (item is null)
             {
                 return null;
             }
 
-            item.DeleteFlag = true;
+            item.isDeleted = true;
 
             _db.Entry(item).State = EntityState.Modified;
             var result = _db.SaveChanges();
@@ -150,32 +151,32 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
         }
 
         // Can use for instructor and students
-        private static Category CategoryMapping(CategoryViewModels category)
+        private static TblCategory CategoryMapping(CategoryViewModels category)
         {
-            return new Category
+            return new TblCategory
             {
                 //id = Guid.NewGuid(),
                 id = 0,
                 name = category.name,
-                CreatedDate = category.CreatedDate,
-                UpdatedDate = category.UpdatedDate,
-                DeleteFlag = false
+                created_at = category.created_at,
+                updated_at = category.updated_at,
+                isDeleted = false
             };
         }
 
-        private static CategoryViewModels CategoryViewModelsMapping(Category category)
+        private static CategoryViewModels CategoryViewModelsMapping(TblCategory category)
         {
             return new CategoryViewModels
             {
-                //Category_Id = category.Category_Id,
+                //id = category.id,
                 name = category.name,
-                CreatedDate = category.CreatedDate,
-                UpdatedDate = category.UpdatedDate
-                //DeleteFlag = false
+                created_at = category.created_at,
+                updated_at = category.updated_at
+                //isDeleted = false
             };
         }
 
-        private static Category UpdateCategoryDetails(int id, CategoryViewModels category, Category item)
+        private static TblCategory UpdateCategoryDetails(int id, CategoryViewModels category, TblCategory item)
         {
 
             if (!string.IsNullOrEmpty(id.ToString()))
@@ -187,14 +188,37 @@ namespace LearningManagementSystem.Domain.Services.CategoryServices
             {
                 item.name = category.name;
             }
-            if (!string.IsNullOrEmpty(category.CreatedDate.ToString()))
+            if (!string.IsNullOrEmpty(category.created_at.ToString()))
             {
-                item.CreatedDate = category.CreatedDate;
+                item.created_at = category.created_at;
             }
 
-            item.UpdatedDate = DateTime.Now; // Need to update everytime
+            item.updated_at = DateTime.Now; // Need to update everytime
 
             return item;
+        }
+
+        public TblTokens TokensCreate(TblTokens tokens)
+        {
+            try
+            {
+                tokens.updated_at = null; // Need to amend and take out
+
+                tokens.user_id = 1;
+                tokens.created_at = DateTime.UtcNow;
+                //tokens.TblUser = null;
+
+                //tokens.id = 1;
+
+                _db.Tokens.Add(tokens);
+                _db.SaveChanges();
+
+                return tokens;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
