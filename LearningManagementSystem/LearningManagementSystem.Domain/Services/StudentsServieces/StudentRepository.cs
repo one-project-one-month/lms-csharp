@@ -2,6 +2,7 @@
 using LearningManagementSystem.DataBase.Models.Students;
 using LearningManagementSystem.DataBase.Models.Users;
 using LearningManagementSystem.Domain.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
@@ -33,6 +34,17 @@ public class StudentRepository : IStudentRepository
 
         return student;
     }
+
+    //public List<UsersViewModels> GetStudents()
+    //{
+    //    var students = _db.Students
+    //        .AsNoTracking()
+    //        .Include(s => s.User)
+    //        .Where(x => x.DeleteFlag == false)
+    //        .ToList();
+
+    //    return List<students>;
+    //}
 
     private static Users UserMapping(UsersViewModels user)
     {

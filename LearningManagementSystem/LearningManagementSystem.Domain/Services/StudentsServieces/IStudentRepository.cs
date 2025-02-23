@@ -11,4 +11,6 @@ namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 public interface IStudentRepository
 {
     UsersViewModels CreateStudent(UsersViewModels user);
+
+    ////List<UsersViewModels> GetStudents();
 }
