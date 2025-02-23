@@ -1,6 +1,5 @@
 ﻿using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models.Students;
-using LearningManagementSystem.DataBase.Models.Users;
+using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +23,7 @@ public class StudentRepository : IStudentRepository
 
         int userId = userModel.id;
 
-        var studentModel = new Students
+        var studentModel = new TblStudents
         {
             user_id = userId
         };
@@ -46,9 +45,9 @@ public class StudentRepository : IStudentRepository
     //    return List<students>;
     //}
 
-    private static Users UserMapping(UsersViewModels user)
+    private static TblUsers UserMapping(UsersViewModels user)
     {
-        return new Users
+        return new TblUsers
         {
             username = user.username,
             email = user.email,
@@ -59,9 +58,9 @@ public class StudentRepository : IStudentRepository
             profile_photo = user.profile_photo,
             role_id = user.role_id,
             is_available = user.is_available,
-            CreatedDate = user.CreatedDate,
-            UpdatedDate = user.UpdatedDate,
-            DeleteFlag = false
+            created_at = user.created_at,
+            updated_at = user.updated_at,
+            isDeleted = false
         };
     }
 }
