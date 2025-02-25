@@ -10,6 +10,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
     [ApiController]
     public class CategoryController : BaseController
     {
+        //Test
         private readonly ICategoryRepository _categoryRepository;
 
         public CategoryController(ICategoryRepository categoryRepository)
