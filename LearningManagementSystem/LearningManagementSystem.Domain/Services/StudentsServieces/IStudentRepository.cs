@@ -1,4 +1,5 @@
-﻿using LearningManagementSystem.Domain.Services.UsersServices;
+﻿using LearningManagementSystem.DataBase.Models;
+using LearningManagementSystem.Domain.Services.UsersServices;
 using LearningManagementSystem.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,5 @@ public interface IStudentRepository
 {
     UsersViewModels CreateStudent(UsersViewModels user);
 
-    ////List<UsersViewModels> GetStudents();
+    List<TblStudents> GetStudents();
 }

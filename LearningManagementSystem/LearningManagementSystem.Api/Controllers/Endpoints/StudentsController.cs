@@ -16,6 +16,14 @@ public class StudentsController : ControllerBase
         _studentRepository = studentRepository;
     }
 
+    [HttpGet]
+
+    public IActionResult GetStudents()
+    {
+        var students = _studentRepository.GetStudents();
+        return Ok(students);
+    }
+
     [HttpPost("Register")]
     public IActionResult CreateStudent(UsersViewModels user)
     {

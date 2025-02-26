@@ -25,7 +25,8 @@ public class StudentRepository : IStudentRepository
 
         var studentModel = new TblStudents
         {
-            user_id = userId
+            user_id = userId,
+            created_at = DateTime.Now
         };
 
         var result = _db.Students.Add(studentModel);
@@ -34,16 +35,16 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
-    //public List<UsersViewModels> GetStudents()
-    //{
-    //    var students = _db.Students
-    //        .AsNoTracking()
-    //        .Include(s => s.User)
-    //        .Where(x => x.DeleteFlag == false)
-    //        .ToList();
+    public List<TblStudents> GetStudents()
+    {
+        var students = _db.Students
+            .AsNoTracking()
+            //.Include(s => s.TblUser)
+            //.Where(x => x.isDeleted == false)
+            .ToList();
 
-    //    return List<students>;
-    //}
+        return students;
+    }
 
     private static TblUsers UserMapping(UsersViewModels user)
     {
@@ -56,7 +57,7 @@ public class StudentRepository : IStudentRepository
             dob = user.dob,
             address = user.address,
             profile_photo = user.profile_photo,
-            role_id = user.role_id,
+            role_id = 4,
             is_available = user.is_available,
             created_at = user.created_at,
             updated_at = user.updated_at,
