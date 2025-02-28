@@ -1,21 +1,4 @@
-﻿using LearningManagementSystem.DataBase.Data;
-
-//using LearningManagementSystem.DataBase.Migrations;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using TblUsers = LearningManagementSystem.DataBase.Models.TblUsers;
-
-namespace LearningManagementSystem.Domain.Services.UsersServices;
+﻿namespace LearningManagementSystem.Domain.Services.UsersServices;
 
 public class UserRepository : IUserRepository
 {

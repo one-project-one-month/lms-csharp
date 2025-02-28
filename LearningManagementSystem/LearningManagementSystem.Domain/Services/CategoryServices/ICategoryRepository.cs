@@ -1,25 +1,20 @@
-﻿using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Models;
-using LearningManagementSystem.Domain.ViewModels;
+﻿namespace LearningManagementSystem.Domain.Services.CategoryServices;
 
-namespace LearningManagementSystem.Domain.Services.CategoryServices
+public interface ICategoryRepository
 {
-    public interface ICategoryRepository
-    {
-        Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
+    Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
 
-        CategoryViewModels CreateCategory(CategoryViewModels category);
+    CategoryViewModels CreateCategory(CategoryViewModels category);
 
-        List<CategoryViewModels> GetCategories();
+    List<CategoryViewModels> GetCategories();
 
-        List<CategoryViewModels> GetCategory(int id);
+    List<CategoryViewModels> GetCategory(int id);
 
-        CategoryViewModels UpdateCategory(int id, CategoryViewModels category);
+    CategoryViewModels UpdateCategory(int id, CategoryViewModels category);
 
-        CategoryViewModels PatchCategory(int id, CategoryViewModels category);
+    CategoryViewModels PatchCategory(int id, CategoryViewModels category);
 
-        public bool? DeleteCategory(int id);
+    public bool? DeleteCategory(int id);
 
-        public TblTokens TokensCreate(TblTokens tokens);
-    }
+    public TblTokens TokensCreate(TblTokens tokens);
 }

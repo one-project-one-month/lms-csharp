@@ -3,9 +3,21 @@
 public class Result<T>
 {
     public bool IsSuccess { get; private set; }
-    public bool IsError { get { return Type == EnumResType.Error; } }
-    public bool IsValidationError { get { return Type == EnumResType.ValidationError; } }
-    public bool IsSystemError { get { return Type == EnumResType.SystemError; } }
+
+    public bool IsError
+    {
+        get { return Type == EnumResType.Error; }
+    }
+
+    public bool IsValidationError
+    {
+        get { return Type == EnumResType.ValidationError; }
+    }
+
+    public bool IsSystemError
+    {
+        get { return Type == EnumResType.SystemError; }
+    }
 
     public EnumResType Type { get; private set; }
     public T? Data { get; private set; }
@@ -19,7 +31,6 @@ public class Result<T>
             Type = EnumResType.Success,
             Data = data,
             Message = message
-
         };
     }
 
@@ -44,6 +55,7 @@ public class Result<T>
             Message = message
         };
     }
+
     public static Result<T> Error(string message, T? data = default)
     {
         return new Result<T>
@@ -54,7 +66,6 @@ public class Result<T>
             Message = message
         };
     }
-
 }
 
 public enum EnumResType
