@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
+using LearningManagementSystem.Domain.Services.ResponseService;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,9 +44,16 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
+    // options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    // options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student,Instructor"));
+    // options.AddPolicy("RequireInstructorRole", policy => policy.RequireRole("Instructor,Student"));
+
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student,Instructor"));
-    options.AddPolicy("RequireInstructorRole", policy => policy.RequireRole("Instructor,Student"));
+    options.AddPolicy("RequireStudentRole", policy => policy.RequireRole(new[] { "Student", "Instructor" }));
+    options.AddPolicy("RequireInstructorRole", policy => policy.RequireRole(new[] { "Instructor", "Student" }));
+    options.AddPolicy("RequireWorkerRole", policy => policy.RequireRole(new[] { "Admin", "Instructor" }));
+
+
 });
 
 #region Read DB type from config and Default is MSSQL
@@ -63,7 +71,7 @@ builder.Services.AddAuthorization(options =>
 //        ServerVersion.AutoDetect(builder.Configuration
 //        .GetConnectionString("MySQLConnection"))));
 
-var databaseType = builder.Configuration["DatabaseType"] ?? "MySQL"; // Default to MSSQL
+var databaseType = builder.Configuration["DatabaseType"] ?? "MSSQL"; // Default to MSSQL
 
 if (databaseType == "MSSQL")
 {
@@ -98,6 +106,7 @@ builder.Services.AddScoped<IValidator<UsersViewModels>, RegistrationValidator>()
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IResponseService, ResponseService>();
 
 // I add some folders in here
 builder.Services.AddScoped<UserRepository>();

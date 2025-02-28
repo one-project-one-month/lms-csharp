@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using LearningManagementSystem.Domain.Services.ResponseService;
 
 namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
 {
@@ -22,6 +23,8 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
         private readonly IConfiguration _onfiguration;
         private readonly AuthService _authService;
         private readonly AppDbContext _context;
+
+        private readonly IResponseService _responseService;
         //private readonly ILogger _logger;
 
         public AuthController(
@@ -29,7 +32,8 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
             IValidator<LoginRequest> loginValidator,
             IConfiguration onfiguration,
             AuthService authService,
-            AppDbContext context
+            AppDbContext context,
+            IResponseService responseService
         //ILogger logger
         )
         {
@@ -38,9 +42,32 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
             _onfiguration = onfiguration;
             _authService = authService;
             _context = context;
+            _responseService = responseService;
             //_logger = logger;
         }
-        [Authorize(Roles = "Admin")]
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpGet("admin-only")]
+        public IActionResult AdminEndpoint()
+        {
+            return Ok("Admin access granted");
+        }
+
+        [Authorize(Policy = "RequireInstructorRole")]
+        [HttpGet("instructor-student")]
+        public IActionResult InstructorEndpoint()
+        {
+            return Ok("Instructor/Student access granted");
+        }
+
+        [Authorize(Policy = "RequireWorkerRole")]
+        [HttpGet("worker-only")]
+        public IActionResult WorkerEndpoint()
+        {
+            return Ok("Worker access granted");
+        }
+
+        [Authorize(Policy = "RequireInstructorRole")]
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles()
         {
@@ -73,6 +100,9 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 return BadRequest("Invalid role ");
             }
 
+            var currentTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+            var formattedDateTime = DateTime.Parse(currentTime);
+
             var user = new TblUsers
             {
                 username = model.username,
@@ -83,7 +113,8 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 address = model.address,
                 profile_photo = model.profile_photo,
                 role_id = role.id,
-                created_at = DateTime.UtcNow,
+                // created_at = DateTime.UtcNow,
+                created_at = formattedDateTime,
 
             };
 
@@ -97,7 +128,8 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                     await _context.Students.AddAsync(new TblStudents
                     {
                         user_id = user.id,
-                        created_at = DateTime.UtcNow
+                        // created_at = DateTime.UtcNow
+                        created_at = formattedDateTime
                     });
                     break;
                 case "instructor":
@@ -129,11 +161,27 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 username = user.username,
                 role = role.role
             };
-            return Ok(new
+
+            var details = new ApiDetails
             {
-                token,
-                response
-                //user.id,user.username, role.role
+                AdditionalProp1 = "User registered successfully.",
+                AdditionalProp2 = "Welcome to Lms Platform",
+                AdditionalProp3 = "Role: " + role.role
+            };
+            // return Ok(new
+            // {
+            //     token,
+            //     response
+            //     //user.id,user.username, role.role
+            // });
+
+            return Ok(new ApiResponse
+            {
+                Status = "Success",
+                Data = new { token, response },
+                Error = null,
+                Message = "User registered successfully.",
+                Details = details
             });
 
         }
@@ -156,7 +204,7 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.email == request.Email && !u.isDeleted);
             var confirmPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.password);
-            if (user == null)
+            if (user == null || !confirmPassword)
             {
                 return Unauthorized(new
                 {
@@ -174,11 +222,27 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 role = role.role
             };
 
-            return Ok(new
+            var details = new ApiDetails
             {
-                token,
-                //user,
-                response
+                AdditionalProp1 = "User logged in successfully.",
+                AdditionalProp2 = "Welcome to Lms Platform " + user.username,
+                AdditionalProp3 = "Role: " + role.role
+            };
+
+            // return Ok(new
+            // {
+            //     token,
+            //     //user,
+            //     response
+            // });
+
+            return Ok(new ApiResponse
+            {
+                Status = "Success",
+                Data = new { token, response },
+                Error = null,
+                Message = "User logged in successfully.",
+                Details = details
             });
         }
 
@@ -243,12 +307,27 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
             //}
 
             //var newToken = await _authService.GenerateToken(tokenEntry.TblUser, tokenEntry.TblUser.TblRole);
-            var newToken = await _authService.GenerateToken(user, user.TblRole);
-            return Ok(new
+
+            var details = new ApiDetails
             {
-                status = 200,
-                acessToken = newToken
+                AdditionalProp1 = "Token is Refresh successfully.",
+                AdditionalProp2 = "Dear " + user.username + " your Token is Refreshed",
+                AdditionalProp3 = "Token is Refreshed at : " + DateTime.UtcNow,
+            };
+            var newToken = await _authService.GenerateToken(user, user.TblRole);
+            return Ok(new ApiResponse
+            {
+                Status = "Success",
+                Data = new { newToken },
+                Error = null,
+                Message = "Token is Refresh successfully.",
+                Details = details
             });
+            // return Ok(new
+            // {
+            //     status = 200,
+            //     acessToken = newToken
+            // });
         }
 
         public class TokenRequest
