@@ -5,6 +5,7 @@
 #### API project (8.0.0)
 
 - Code first 
+- JWT
 
 Nuget Package:
 
