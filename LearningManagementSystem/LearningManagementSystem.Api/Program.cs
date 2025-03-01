@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks.Dataflow;
+using LearningManagementSystem.Domain.Services.StudentsServieces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -99,14 +100,13 @@ builder.Services.AddSwaggerGen(options =>
 
 
 // I add some folders in here
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-builder.Services.AddScoped<LessonRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 
 //builder.Services.AddTransient<IUserRepository, UserRepository>();
