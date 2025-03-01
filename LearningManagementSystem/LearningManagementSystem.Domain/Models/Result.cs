@@ -4,26 +4,12 @@ public class Result<T>
 {
     public bool IsSuccess { get; private set; }
 
-    public bool IsError
-    {
-        get { return Type == EnumResType.Error; }
-    }
-
-    public bool IsValidationError
-    {
-        get { return Type == EnumResType.ValidationError; }
-    }
-
-    public bool IsSystemError
-    {
-        get { return Type == EnumResType.SystemError; }
-    }
-
     public EnumResType Type { get; private set; }
     public T? Data { get; private set; }
     public string Message { get; private set; } = null!;
+    public List<string>? ValidationErrors { get; private set; }  // 🔹 Added for FluentValidation errors
 
-    public static Result<T> Success<T>(T data, string message = "Success")
+    public static Result<T> Success(T data, string message = "Success")
     {
         return new Result<T>
         {
@@ -42,6 +28,19 @@ public class Result<T>
             Type = EnumResType.ValidationError,
             Data = data,
             Message = message
+        };
+    }
+
+    // 🔹 New: Method to handle multiple validation errors from FluentValidation
+    public static Result<T> ValidationError(List<string> errors, T? data = default)
+    {
+        return new Result<T>
+        {
+            IsSuccess = false,
+            Type = EnumResType.ValidationError,
+            Data = data,
+            ValidationErrors = errors,
+            Message = "Validation errors occurred."
         };
     }
 
