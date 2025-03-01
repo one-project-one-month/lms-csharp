@@ -20,7 +20,6 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
                 return BadRequest(model);
 
             return Ok(model);
-
         }
     }
 }
