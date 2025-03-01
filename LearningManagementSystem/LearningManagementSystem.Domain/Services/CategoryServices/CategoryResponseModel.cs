@@ -1,6 +1,4 @@
-﻿using LearningManagementSystem.Domain.ViewModels;
-
-namespace LearningManagementSystem.Domain.Services.CategoryServices;
+﻿namespace LearningManagementSystem.Domain.Services.CategoryServices;
 
 public class CategoryResponseModel
 {
