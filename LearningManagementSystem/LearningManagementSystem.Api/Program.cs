@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks.Dataflow;
 using LearningManagementSystem.Domain.Services.StudentsServieces;
+using LearningManagementSystem.Domain.Services.CourseService;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,7 +69,9 @@ if (databaseType == "MySQL")
 
 
 //Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
+
+
 
 //Add FluentValidation
 builder.Services
@@ -107,6 +110,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 
 //builder.Services.AddTransient<IUserRepository, UserRepository>();
