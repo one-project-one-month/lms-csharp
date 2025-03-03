@@ -16,6 +16,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 using LearningManagementSystem.Domain.Services.ResponseService;
+using LearningManagementSystem.Domain.Services.UserServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -107,6 +108,9 @@ builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IResponseService, ResponseService>();
+
+builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 // I add some folders in here
 builder.Services.AddScoped<UserRepository>();

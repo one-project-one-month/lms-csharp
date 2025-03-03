@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using LearningManagementSystem.Domain.Services.ResponseService;
+using LearningManagementSystem.Domain.Services.UserServices;
+using LearningManagementSystem.Domain.Services.UserServices.Responses;
 
 namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
 {
@@ -20,9 +22,11 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
     {
         private readonly IValidator<UsersViewModels> _registrationValidator;
         private readonly IValidator<LoginRequest> _loginValidator;
-        private readonly IConfiguration _onfiguration;
+        private readonly IConfiguration _configuration;
         private readonly AuthService _authService;
         private readonly AppDbContext _context;
+
+        private readonly IUserServices _userServices;
 
         private readonly IResponseService _responseService;
         //private readonly ILogger _logger;
@@ -30,21 +34,34 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
         public AuthController(
             IValidator<UsersViewModels> registrationValidator,
             IValidator<LoginRequest> loginValidator,
-            IConfiguration onfiguration,
+            IConfiguration configuration,
             AuthService authService,
             AppDbContext context,
-            IResponseService responseService
+            IResponseService responseService,
+            IUserServices userServices
         //ILogger logger
         )
         {
             _registrationValidator = registrationValidator;
             _loginValidator = loginValidator;
-            _onfiguration = onfiguration;
+            _configuration = configuration;
             _authService = authService;
             _context = context;
             _responseService = responseService;
             //_logger = logger;
+            _userServices = userServices;
         }
+
+        // [HttpGet("instructor")]
+        // public async Task<IActionResult> InstructorEndpoint(int id)
+        // {
+        //     var student = await _userServices.GetInstructor(id);
+        //     if (student == null)
+        //     {
+        //         return NotFound("Student not found");
+        //     }
+        //     return Ok(student);
+        // }
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("admin-only")]
@@ -186,12 +203,6 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
 
         }
 
-        public class responseUser()
-        {
-            public int id { get; set; }
-            public string username { get; set; }
-            public string role { get; set; }
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
@@ -244,6 +255,147 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 Message = "User logged in successfully.",
                 Details = details
             });
+        }
+
+        [HttpPost("signUp")]
+        public async Task<IActionResult> SignUp(UsersViewModels model)
+        {
+            var validationResult = await _registrationValidator.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
+                );
+            }
+
+            var role = await _context.Roles.FindAsync(model.role_id);
+            if (role == null)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError("Invalid role")
+                );
+            }
+
+            var user = new TblUsers
+            {
+                username = model.username,
+                email = model.email,
+                password = BCrypt.Net.BCrypt.HashPassword(model.password),
+                phone = model.phone,
+                dob = model.dob,
+                address = model.address,
+                profile_photo = model.profile_photo,
+                role_id = role.id,
+                // created_at = DateTime.UtcNow,
+                created_at = DateTime.UtcNow,
+            };
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            switch (role.role.ToLower())
+            {
+                case "student":
+                    await _context.Students.AddAsync(new TblStudents
+                    {
+                        user_id = user.id,
+                        // created_at = DateTime.UtcNow
+                        created_at = DateTime.UtcNow
+                    });
+                    break;
+                case "instructor":
+                    await _context.Instructors.AddAsync(new TblInstructors
+                    {
+                        user_id = user.id,
+                        nrc = model.nrc,
+                        edu_background = model.edu_background,
+                        created_at = DateTime.UtcNow
+
+                    });
+                    break;
+                case "admin":
+                    await _context.Admins.AddAsync(new TblAdmins
+                    {
+                        user_id = user.id,
+                        created_at = DateTime.UtcNow
+                    });
+                    break;
+
+            }
+
+            await _context.SaveChangesAsync();
+
+            var token = await _authService.GenerateToken(user, role);
+            var newUser = new UserResponse
+            {
+                id = user.id,
+                username = user.username,
+                email = user.email,
+                password = user.password,
+                phone = user.phone,
+                dob = user.dob,
+                address = user.address,
+                // profile_photo = user.profile_photo,
+                created_at = user.created_at,
+                role_id = user.role_id,
+                role = role.role,
+                //instructor
+                nrc = model.nrc,
+                edu_background = model.edu_background,
+                // is_available = false
+            };
+
+            var response = new SignInResponse
+            {
+                token = token,
+                response = newUser
+            };
+
+            // var details = new ApiDetails
+            // {
+            //     AdditionalProp1 = "User registered successfully.",
+            //     AdditionalProp2 = "Welcome to Lms Platform " + user.username,
+            //     AdditionalProp3 = "Role: " + role.role
+            // };
+
+            return _responseService.Response(
+                Response<object>.Success(response, "User registered successfully.")
+            );
+        }
+        [HttpPost("signIn")]
+        public async Task<IActionResult> SignIn(LoginRequest request)
+        {
+            var validationResult = await _loginValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
+                );
+
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.email == request.Email && !u.isDeleted);
+            var confirmPassword = user != null && BCrypt.Net.BCrypt.Verify(request.Password, user.password);
+
+            if (user == null || !confirmPassword)
+            {
+                return _responseService.Response(
+                    Response<object>.Error("Invalid Credentials")
+                );
+            }
+
+            var role = await _context.Roles.FindAsync(user.role_id);
+            var token = await _authService.GenerateToken(user, role);
+            var response = new responseUser
+            {
+                id = user.id,
+                username = user.username,
+                role = role.role
+            };
+
+            var LoginResponse = new { token, response };
+
+            return _responseService.Response(Response<object>.Success(LoginResponse, "User logged in successfully."));
         }
 
         [HttpPost("refreshToken")]
@@ -323,16 +475,25 @@ namespace LearningManagementSystem.Api.Controllers.AuthEndpoints
                 Message = "Token is Refresh successfully.",
                 Details = details
             });
-            // return Ok(new
-            // {
-            //     status = 200,
-            //     acessToken = newToken
-            // });
         }
 
         public class TokenRequest
         {
             public string token { get; set; }
+        }
+
+
+        public class responseUser()
+        {
+            public int id { get; set; }
+            public string username { get; set; }
+            public string role { get; set; }
+        }
+
+        public class SignInResponse
+        {
+            public string token { get; set; }
+            public object response { get; set; }
         }
     }
 }
