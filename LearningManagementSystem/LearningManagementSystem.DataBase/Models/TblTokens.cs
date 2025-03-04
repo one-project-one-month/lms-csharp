@@ -17,7 +17,7 @@ namespace LearningManagementSystem.DataBase.Models
 
         public int user_id { get; set; }
 
-        [Column(TypeName = "varchar(255)")]
+        [Column(TypeName = "varchar(1000)")]
         public string token { get; set; } = null!;
 
         [Column(TypeName = "datetime")]
