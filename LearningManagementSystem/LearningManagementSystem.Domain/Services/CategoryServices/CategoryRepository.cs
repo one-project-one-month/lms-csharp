@@ -1,224 +1,192 @@
-﻿using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Models;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-//using LearningManagementSystem.DataBase.Migrations;
+﻿namespace LearningManagementSystem.Domain.Services.CategoryServices;
 
-namespace LearningManagementSystem.Domain.Services.CategoryServices
+public class CategoryRepository : ICategoryRepository
 {
-    public class CategoryRepository : ICategoryRepository
+    private readonly AppDbContext _db;
+
+    public CategoryRepository(AppDbContext db)
     {
-        private readonly AppDbContext _db;
+        _db = db;
+    }
 
-        public CategoryRepository(AppDbContext db)
+    public Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category)
+    {
+        try
         {
-            _db = db;
+            category.updated_at = null; // Need to amend and take out
+
+            var model = CategoryMapping(category);
+
+            _db.Category.Add(model);
+            _db.SaveChanges();
+
+            var item = new CategoryResponseModel()
+            {
+                Category = category
+            };
+
+            var result = Result<CategoryResponseModel>
+                .Success(item, "Category created successfully.");
+
+            return result;
         }
-
-        public Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category)
+        catch (ValidationException ex)
         {
-            try
-            {
-                category.updated_at = null; // Need to amend and take out
-
-                var model = CategoryMapping(category);
-
-                _db.Category.Add(model);
-                _db.SaveChanges();
-
-                var item = new CategoryResponseModel()
-                {
-                    Category = category
-                };
-
-                var result = Result<CategoryResponseModel>
-                    .Success(item, "Category created successfully.");
-
-                return result;
-            }
-            catch (ValidationException ex)
-            {
-                return Result<CategoryResponseModel>.ValidationError("Validation Error: " + ex.Message);
-            }
-            catch (SystemException ex)
-            {
-                return Result<CategoryResponseModel>.SystemError("System Error: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Result<CategoryResponseModel>.Error("An unexpected error occurred: " + ex.Message);
-            }
+            return Result<CategoryResponseModel>.ValidationError("Validation Error: " + ex.Message);
         }
-
-        public CategoryViewModels CreateCategory(CategoryViewModels category)
+        catch (SystemException ex)
         {
-            try
-            {
-                category.updated_at = null; // Need to amend and take out
-
-                var model = CategoryMapping(category);
-
-                _db.Category.Add(model);
-                _db.SaveChanges();
-
-                return category;
-            }
-            catch 
-            {
-                throw;
-            }
+            return Result<CategoryResponseModel>.SystemError("System Error: " + ex.Message);
         }
-
-        public List<CategoryViewModels> GetCategories()
+        catch (Exception ex)
         {
-            var model = _db.Category
-                .AsNoTracking()
-                .Where(x => // x.Role == "Instructor" && // need to check with roles
+            return Result<CategoryResponseModel>.Error("An unexpected error occurred: " + ex.Message);
+        }
+    }
+
+    public async Task<CategoryViewModels> CreateCategory(CategoryViewModels category)
+    {
+        try
+        {
+            category.updated_at = null; // Need to amend and take out
+
+            var model = CategoryMapping(category);
+
+            _db.Category.Add(model);
+            await _db.SaveChangesAsync();
+
+            return category;
+        }
+        catch 
+        {
+            throw;
+        }
+    }
+
+    public async Task<List<CategoryViewModels>> GetCategories()
+    {
+        var model = await _db.Category
+            .AsNoTracking()
+            .Where(x => // x.Role == "Instructor" && // need to check with roles
                 x.isDeleted == false)
-                .ToList();
+            .ToListAsync();
 
-            var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
+        var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
 
-            return userViewModels;
-        }
+        return userViewModels;
+    }
 
-        public List<CategoryViewModels> GetCategory(int id)
+    public async Task<List<CategoryViewModels>> GetCategory(int id)
+    {
+        var model = await _db.Category
+            .AsNoTracking()
+            .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
+            .ToListAsync();
+
+        var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
+
+        return userViewModels;
+    }
+
+    public async Task<CategoryViewModels> UpdateCategory(int id, CategoryViewModels category)
+    {
+        var item = await _db.Category
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.id == id
+                                 && x.isDeleted == false);
+        if (item is null) { return null; }
+
+        item = UpdateCategoryDetails(id, category, item); // Updating Users info
+
+        _db.Entry(item).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        var model = CategoryViewModelsMapping(item);
+
+        return model;
+    }
+
+    public async Task<CategoryViewModels> PatchCategory(int id, CategoryViewModels category)
+    {
+        var item = await _db.Category
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.id == id
+                                 && x.isDeleted == false);
+        if (item is null) { return null; }
+
+        item = UpdateCategoryDetails(id, category, item); // Updating Users info
+
+        _db.Entry(item).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        var model = CategoryViewModelsMapping(item);
+        return model;
+    }
+
+    public async Task<bool?> DeleteCategory(int id)
+    {
+        var item = await _db.Category
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.id == id
+                                 && x.isDeleted == false);
+        if (item is null)
         {
-            var model = _db.Category
-                .AsNoTracking()
-                .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
-                .ToList();
-
-            var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
-
-            return userViewModels;
+            return null;
         }
 
-        public CategoryViewModels? UpdateCategory(int id, CategoryViewModels category)
+        item.isDeleted = true;
+
+        _db.Entry(item).State = EntityState.Modified;
+        var result = _db.SaveChanges();
+
+        return result > 0;
+    }
+
+    // Can use for instructor and students
+    private static TblCategory CategoryMapping(CategoryViewModels category)
+    {
+        return new TblCategory
         {
-            var item = _db.Category
-                .AsNoTracking()
-                .FirstOrDefault(x => x.id == id
-                && x.isDeleted == false);
-            if (item is null) { return null; }
+            //id = Guid.NewGuid(),
+            id = 0,
+            name = category.name,
+            created_at = category.created_at,
+            updated_at = category.updated_at,
+            isDeleted = false
+        };
+    }
 
-            item = UpdateCategoryDetails(id, category, item); // Updating Users info
-
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
-
-            var model = CategoryViewModelsMapping(item);
-
-            return model;
-        }
-
-        public CategoryViewModels? PatchCategory(int id, CategoryViewModels category)
+    private static CategoryViewModels CategoryViewModelsMapping(TblCategory category)
+    {
+        return new CategoryViewModels
         {
-            var item = _db.Category
-                .AsNoTracking()
-                .FirstOrDefault(x => x.id == id
-                && x.isDeleted == false);
-            if (item is null) { return null; }
+            //id = category.id,
+            name = category.name,
+            created_at = category.created_at,
+            updated_at = category.updated_at
+            //isDeleted = false
+        };
+    }
 
-            item = UpdateCategoryDetails(id, category, item); // Updating Users info
+    private static TblCategory UpdateCategoryDetails(int id, CategoryViewModels category, TblCategory item)
+    {
 
-            _db.Entry(item).State = EntityState.Modified;
-            _db.SaveChanges();
-
-            var model = CategoryViewModelsMapping(item);
-            return model;
-        }
-
-        public bool? DeleteCategory(int id)
+        if (!string.IsNullOrEmpty(id.ToString()))
         {
-            var item = _db.Category
-                .AsNoTracking()
-                .FirstOrDefault(x => x.id == id
-                && x.isDeleted == false);
-            if (item is null)
-            {
-                return null;
-            }
-
-            item.isDeleted = true;
-
-            _db.Entry(item).State = EntityState.Modified;
-            var result = _db.SaveChanges();
-
-            return result > 0;
+            //item.Category_Id = Guid.Parse(id);
+            item.id = id;
         }
-
-        // Can use for instructor and students
-        private static TblCategory CategoryMapping(CategoryViewModels category)
+        if (!string.IsNullOrEmpty(category.name))
         {
-            return new TblCategory
-            {
-                //id = Guid.NewGuid(),
-                id = 0,
-                name = category.name,
-                created_at = category.created_at,
-                updated_at = category.updated_at,
-                isDeleted = false
-            };
+            item.name = category.name;
         }
-
-        private static CategoryViewModels CategoryViewModelsMapping(TblCategory category)
+        if (!string.IsNullOrEmpty(category.created_at.ToString()))
         {
-            return new CategoryViewModels
-            {
-                //id = category.id,
-                name = category.name,
-                created_at = category.created_at,
-                updated_at = category.updated_at
-                //isDeleted = false
-            };
+            item.created_at = category.created_at;
         }
 
-        private static TblCategory UpdateCategoryDetails(int id, CategoryViewModels category, TblCategory item)
-        {
+        item.updated_at = DateTime.Now; // Need to update everytime
 
-            if (!string.IsNullOrEmpty(id.ToString()))
-            {
-                //item.Category_Id = Guid.Parse(id);
-                item.id = id;
-            }
-            if (!string.IsNullOrEmpty(category.name))
-            {
-                item.name = category.name;
-            }
-            if (!string.IsNullOrEmpty(category.created_at.ToString()))
-            {
-                item.created_at = category.created_at;
-            }
-
-            item.updated_at = DateTime.Now; // Need to update everytime
-
-            return item;
-        }
-
-        public TblTokens TokensCreate(TblTokens tokens)
-        {
-            try
-            {
-                tokens.updated_at = null; // Need to amend and take out
-
-                tokens.user_id = 1;
-                tokens.created_at = DateTime.UtcNow;
-                //tokens.TblUser = null;
-
-                //tokens.id = 1;
-
-                _db.Tokens.Add(tokens);
-                _db.SaveChanges();
-
-                return tokens;
-            }
-            catch
-            {
-                throw;
-            }
-        }
+        return item;
     }
 }

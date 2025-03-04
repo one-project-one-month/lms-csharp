@@ -6,7 +6,6 @@ public class Result<T>
     public bool IsError => Type == EnumResType.Error;
     public bool IsValidationError => Type == EnumResType.ValidationError;
     public bool IsSystemError => Type == EnumResType.SystemError;
-
     public EnumResType Type { get; private set; }
     public T? Data { get; private set; }
     public string Message { get; private set; } = null!;

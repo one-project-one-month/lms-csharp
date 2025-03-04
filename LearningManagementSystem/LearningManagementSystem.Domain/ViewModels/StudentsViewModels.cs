@@ -1,8 +1,15 @@
-﻿namespace LearningManagementSystem.Domain.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-public class UsersViewModels
+namespace LearningManagementSystem.Domain.ViewModels;
+
+public class StudentsViewModels
 {
-    //[JsonIgnore]
+    [JsonIgnore]
     public int role_id { get; set; } // Validation Required for allow only student or instructor
     public string username { get; set; } = null!;
     public string email { get; set; } = null!;
@@ -14,9 +21,6 @@ public class UsersViewModels
     public bool is_available { get; set; } = false;
     public DateTime created_at { get; set; }
     public DateTime? updated_at { get; set; }
+    [JsonIgnore]
     public bool isDeleted { get; set; } = false;
-
-    //Instructor
-    public string nrc { get; set; }
-    public string edu_background { get; set; }
 }

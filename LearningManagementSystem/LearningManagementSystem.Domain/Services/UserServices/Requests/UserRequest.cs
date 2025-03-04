@@ -1,8 +1,10 @@
-﻿namespace LearningManagementSystem.Domain.ViewModels;
+using System;
+using System.Text.Json.Serialization;
 
-public class UsersViewModels
+namespace LearningManagementSystem.Domain.Services.UserServices.Requests;
+
+public class UserRequest
 {
-    //[JsonIgnore]
     public int role_id { get; set; } // Validation Required for allow only student or instructor
     public string username { get; set; } = null!;
     public string email { get; set; } = null!;
@@ -14,6 +16,7 @@ public class UsersViewModels
     public bool is_available { get; set; } = false;
     public DateTime created_at { get; set; }
     public DateTime? updated_at { get; set; }
+    [JsonIgnore]
     public bool isDeleted { get; set; } = false;
 
     //Instructor
