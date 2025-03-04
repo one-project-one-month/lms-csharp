@@ -4,17 +4,15 @@ public interface ICategoryRepository
 {
     Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
 
-    CategoryViewModels CreateCategory(CategoryViewModels category);
+    Task<CategoryViewModels> CreateCategory(CategoryViewModels category);
 
-    List<CategoryViewModels> GetCategories();
+    Task<List<CategoryViewModels>> GetCategories();
 
-    List<CategoryViewModels> GetCategory(int id);
+    Task<List<CategoryViewModels>> GetCategory(int id);
 
-    CategoryViewModels UpdateCategory(int id, CategoryViewModels category);
+    Task<CategoryViewModels> UpdateCategory(int id, CategoryViewModels category);
 
-    CategoryViewModels PatchCategory(int id, CategoryViewModels category);
+    Task<CategoryViewModels> PatchCategory(int id, CategoryViewModels category);
 
-    public bool? DeleteCategory(int id);
-
-    public TblTokens TokensCreate(TblTokens tokens);
+    public Task<bool?> DeleteCategory(int id);
 }
