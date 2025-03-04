@@ -7,3 +7,4 @@ global using LearningManagementSystem.Domain.Models;
 global using LearningManagementSystem.Domain.ViewModels;
 global using Microsoft.EntityFrameworkCore;
 global using TblUsers = LearningManagementSystem.DataBase.Models.TblUsers;
+global using System.Text.Json.Serialization;

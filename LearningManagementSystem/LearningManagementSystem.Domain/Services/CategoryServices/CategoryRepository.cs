@@ -44,7 +44,7 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
-    public CategoryViewModels CreateCategory(CategoryViewModels category)
+    public async Task<CategoryViewModels> CreateCategory(CategoryViewModels category)
     {
         try
         {
@@ -53,7 +53,7 @@ public class CategoryRepository : ICategoryRepository
             var model = CategoryMapping(category);
 
             _db.Category.Add(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return category;
         }
@@ -63,36 +63,36 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
-    public List<CategoryViewModels> GetCategories()
+    public async Task<List<CategoryViewModels>> GetCategories()
     {
-        var model = _db.Category
+        var model = await _db.Category
             .AsNoTracking()
             .Where(x => // x.Role == "Instructor" && // need to check with roles
                 x.isDeleted == false)
-            .ToList();
+            .ToListAsync();
 
         var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
 
         return userViewModels;
     }
 
-    public List<CategoryViewModels> GetCategory(int id)
+    public async Task<List<CategoryViewModels>> GetCategory(int id)
     {
-        var model = _db.Category
+        var model = await _db.Category
             .AsNoTracking()
             .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
-            .ToList();
+            .ToListAsync();
 
         var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
 
         return userViewModels;
     }
 
-    public CategoryViewModels? UpdateCategory(int id, CategoryViewModels category)
+    public async Task<CategoryViewModels> UpdateCategory(int id, CategoryViewModels category)
     {
-        var item = _db.Category
+        var item = await _db.Category
             .AsNoTracking()
-            .FirstOrDefault(x => x.id == id
+            .FirstOrDefaultAsync(x => x.id == id
                                  && x.isDeleted == false);
         if (item is null) { return null; }
 
@@ -106,11 +106,11 @@ public class CategoryRepository : ICategoryRepository
         return model;
     }
 
-    public CategoryViewModels? PatchCategory(int id, CategoryViewModels category)
+    public async Task<CategoryViewModels> PatchCategory(int id, CategoryViewModels category)
     {
-        var item = _db.Category
+        var item = await _db.Category
             .AsNoTracking()
-            .FirstOrDefault(x => x.id == id
+            .FirstOrDefaultAsync(x => x.id == id
                                  && x.isDeleted == false);
         if (item is null) { return null; }
 
@@ -123,11 +123,11 @@ public class CategoryRepository : ICategoryRepository
         return model;
     }
 
-    public bool? DeleteCategory(int id)
+    public async Task<bool?> DeleteCategory(int id)
     {
-        var item = _db.Category
+        var item = await _db.Category
             .AsNoTracking()
-            .FirstOrDefault(x => x.id == id
+            .FirstOrDefaultAsync(x => x.id == id
                                  && x.isDeleted == false);
         if (item is null)
         {
@@ -188,28 +188,5 @@ public class CategoryRepository : ICategoryRepository
         item.updated_at = DateTime.Now; // Need to update everytime
 
         return item;
-    }
-
-    public TblTokens TokensCreate(TblTokens tokens)
-    {
-        try
-        {
-            tokens.updated_at = null; // Need to amend and take out
-
-            tokens.user_id = 1;
-            tokens.created_at = DateTime.UtcNow;
-            //tokens.TblUser = null;
-
-            //tokens.id = 1;
-
-            _db.Tokens.Add(tokens);
-            _db.SaveChanges();
-
-            return tokens;
-        }
-        catch
-        {
-            throw;
-        }
     }
 }
