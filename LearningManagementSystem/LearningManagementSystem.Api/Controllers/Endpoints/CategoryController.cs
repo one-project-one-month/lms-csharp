@@ -24,7 +24,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             return Ok(items);
         }
 
-        [HttpGet("GetCategory/{id}")]
+        [HttpGet("GetCategory")]
         public async Task<IActionResult> GetCategory(int id)
         {
             var items = await _categoryRepository.GetCategory(id);
@@ -40,7 +40,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             return Ok(items);
         }
 
-        [HttpPut("UpdateCategory/{id}")]
+        [HttpPut("UpdateCategory")]
         public async Task<IActionResult> UpdateCategory(int id, CategoryViewModels user)
         {
 
@@ -53,7 +53,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             return Ok(item);
         }
 
-        [HttpPatch("PatchCategory/{id}")]
+        [HttpPatch("PatchCategory")]
         public async Task<IActionResult> PatchCategory(int id, CategoryViewModels user)
         {
 
@@ -66,7 +66,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             return Ok(item);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var item = await _categoryRepository.DeleteCategory(id);
