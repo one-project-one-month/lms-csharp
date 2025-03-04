@@ -1,5 +1,4 @@
-﻿using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Services.CategoryServices;
+﻿using LearningManagementSystem.Domain.Services.CategoryServices;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 //using LearningManagementSystem.DataBase.Migrations;
@@ -18,37 +17,34 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpGet("GetCategories")]
-        public IActionResult GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            var items = _categoryRepository.GetCategories();
+            var items = await _categoryRepository.GetCategories();
 
             return Ok(items);
         }
 
         [HttpGet("GetCategory/{id}")]
-        public IActionResult GetCategory(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
-            var items = _categoryRepository.GetCategory(id);
+            var items = await _categoryRepository.GetCategory(id);
 
             return Ok(items);
         }
 
         [HttpPost("CreateCategory")]
-        public IActionResult CreateCategory(CategoryViewModels user)
+        public async Task<IActionResult> CreateCategory(CategoryViewModels user)
         {
-            var items = _categoryRepository.CreateCategory(user);
+            var items = await _categoryRepository.CreateCategory(user);
 
             return Ok(items);
-            //return Execute(items);
         }
 
         [HttpPut("UpdateCategory/{id}")]
-        public IActionResult UpdateCategory(int id, CategoryViewModels user)
+        public async Task<IActionResult> UpdateCategory(int id, CategoryViewModels user)
         {
 
-            var item = _categoryRepository.UpdateCategory(id, user);
-
-            // need to write reponse & request
+            var item = await _categoryRepository.UpdateCategory(id, user);
 
             if (item is null)
             {
@@ -58,12 +54,10 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpPatch("PatchCategory/{id}")]
-        public IActionResult PatchCategory(int id, CategoryViewModels user)
+        public async Task<IActionResult> PatchCategory(int id, CategoryViewModels user)
         {
 
-            var item = _categoryRepository.PatchCategory(id, user);
-
-            // need to write reponse & request
+            var item = await _categoryRepository.PatchCategory(id, user);
 
             if (item is null)
             {
@@ -73,25 +67,15 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            var item = _categoryRepository.DeleteCategory(id);
+            var item = await _categoryRepository.DeleteCategory(id);
 
             if (item is null)
             {
                 return BadRequest("Don`t have data");
             }
             return Ok("Deleting success");
-        }
-
-
-        [HttpPost("Token_Test")]
-        public IActionResult Token_Test(TblTokens tokens)
-        {
-            var items = _categoryRepository.TokensCreate(tokens);
-
-            return Ok(items);
-            //return Execute(items);
         }
     }
 }

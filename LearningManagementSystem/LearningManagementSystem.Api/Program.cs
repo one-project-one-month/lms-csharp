@@ -1,13 +1,20 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
+using FluentValidation;
 using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.Domain.Services.AuthServices;
 using LearningManagementSystem.Domain.Services.AuthServices.Requests;
 using LearningManagementSystem.Domain.Services.AuthServices.Validators;
 using LearningManagementSystem.Domain.Services.CategoryServices;
+using LearningManagementSystem.Domain.Services.LessonServices;
 using LearningManagementSystem.Domain.Services.UsersServices;
+
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using LearningManagementSystem.Domain.Validators;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -15,8 +22,13 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
+
 using LearningManagementSystem.Domain.Services.ResponseService;
 using LearningManagementSystem.Domain.Services.UserServices;
+
+using LearningManagementSystem.Domain.Services.StudentsServieces;
+using LearningManagementSystem.Domain.Services.CourseService;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +74,23 @@ builder.Services.AddAuthorization(options =>
 // Get database type from configuration (or environment variable)
 
 
+//Configuration API Version
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+});
+
+//Configuration API Version
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+
 //builder.Services.AddDbContext<AppDbContext>(options =>
 //        options.UseSqlServer(builder.Configuration
 //        .GetConnectionString("MSSQLConnection")));
@@ -92,10 +121,38 @@ if (databaseType == "MySQL")
 
 
 //Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
+
+
+
+//Add FluentValidation
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+
+builder.Services.AddValidatorsFromAssemblyContaining<LessonValidator>();
+
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var provider = builder.Services.BuildServiceProvider()
+     .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(description.GroupName,
+            new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = $"Learning Management System API {description.ApiVersion}",
+                Version = description.ApiVersion.ToString()
+            });
+    }
+});
+
 
 builder.Services.AddControllers().AddFluentValidation(fv =>
 {
@@ -113,11 +170,15 @@ builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
 // I add some folders in here
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 
 //builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -156,11 +217,20 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    //app.UseSwaggerUI();
-    app.UseSwaggerUI(c =>
+    app.UseSwaggerUI(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
-    });
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS API V1");
+        var provider = app.Services
+            .GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                $"Learning Management System API {description.GroupName.ToUpperInvariant()}");
+        }
+    }
+    );
+
 }
 
 app.UseHttpsRedirection();

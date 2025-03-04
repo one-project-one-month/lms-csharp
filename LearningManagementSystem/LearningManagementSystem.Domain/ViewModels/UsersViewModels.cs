@@ -5,7 +5,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace LearningManagementSystem.Domain.ViewModels
+namespace LearningManagementSystem.Domain.ViewModels;
+
+public class UsersViewModels
 {
     public class UsersViewModels
     {
@@ -21,7 +23,6 @@ namespace LearningManagementSystem.Domain.ViewModels
         public bool is_available { get; set; } = false;
         public DateTime created_at { get; set; }
         public DateTime? updated_at { get; set; }
-        [JsonIgnore]
         public bool isDeleted { get; set; } = false;
 
         //Instructor
@@ -29,4 +30,3 @@ namespace LearningManagementSystem.Domain.ViewModels
         public string edu_background { get; set; }
     }
 }
-
