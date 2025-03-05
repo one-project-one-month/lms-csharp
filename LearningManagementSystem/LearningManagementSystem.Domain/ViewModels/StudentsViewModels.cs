@@ -9,7 +9,6 @@ namespace LearningManagementSystem.Domain.ViewModels;
 
 public class StudentsViewModels
 {
-    [JsonIgnore]
     public int role_id { get; set; } // Validation Required for allow only student or instructor
     public string username { get; set; } = null!;
     public string email { get; set; } = null!;

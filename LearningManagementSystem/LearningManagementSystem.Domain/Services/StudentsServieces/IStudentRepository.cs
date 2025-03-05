@@ -11,11 +11,13 @@ namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
 public interface IStudentRepository
 {
-    UsersViewModels CreateStudent(UsersViewModels user);
+    StudentsViewModels CreateStudent(StudentsViewModels user);
 
-    List<UsersViewModels> GetStudents();
+    List<StudentsViewModels> GetStudents();
 
-    UsersViewModels GetStudent(int id);
+    StudentsViewModels GetStudent(int id);
 
     bool DeleteStudent(int id);
+
+    StudentsViewModels UpdateStudent(int id, StudentsViewModels student);
 }

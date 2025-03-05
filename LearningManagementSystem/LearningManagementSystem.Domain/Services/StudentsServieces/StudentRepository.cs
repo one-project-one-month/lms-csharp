@@ -2,6 +2,8 @@
 using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Pomelo.EntityFrameworkCore.MySql.Metadata.Internal;
 
 namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
@@ -14,7 +16,7 @@ public class StudentRepository : IStudentRepository
         _db = db;
     }
 
-    public UsersViewModels CreateStudent(UsersViewModels student)
+    public StudentsViewModels CreateStudent(StudentsViewModels student)
     {
         var userModel = UserMapping(student);
 
@@ -35,7 +37,7 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
-    public List<UsersViewModels> GetStudents()
+    public List<StudentsViewModels> GetStudents()
     {
         var roleId = _db.Roles
             .Where(x => x.role == "student")
@@ -52,7 +54,7 @@ public class StudentRepository : IStudentRepository
         return userViewModels;
     }
 
-    public UsersViewModels GetStudent(int id)
+    public StudentsViewModels GetStudent(int id)
     {
         var roleId = _db.Roles
             .Where(x => x.role == "student")
@@ -65,6 +67,25 @@ public class StudentRepository : IStudentRepository
             .FirstOrDefault();
 
         var userViewModels = UsersViewModelsMapping(userModel!);
+        return userViewModels;
+    }
+
+    public StudentsViewModels UpdateStudent(int id, StudentsViewModels student)
+    {
+        var item = _db.Users
+            .AsNoTracking()
+            .Where(s => s.id == id && s.isDeleted == false)
+            .Include(s => s.TblRole)
+            .FirstOrDefault();
+
+        if (item is null) return null;
+
+        item = UpdateUserDetail(id, student, item);
+
+        _db.Entry(item).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        var userViewModels = UsersViewModelsMapping(item);
         return userViewModels;
     }
 
@@ -91,7 +112,55 @@ public class StudentRepository : IStudentRepository
         return result > 0;
     }
 
-    private TblUsers UserMapping(UsersViewModels user)
+    private TblUsers UpdateUserDetail(int id, StudentsViewModels user, TblUsers item)
+    {
+        if (!string.IsNullOrEmpty(user.username.ToString()))
+        {
+            item.username = user.username;
+        }
+        if (user.role_id != 0)
+        {
+            item.role_id = user.role_id;
+        }
+        if (!string.IsNullOrEmpty(user.username))
+        {
+            item.username = user.username;
+        }
+        if (!string.IsNullOrEmpty(user.email))
+        {
+            item.email = user.email;
+        }
+        if (!string.IsNullOrEmpty(user.password))
+        {
+            item.password = user.password;
+        }
+        if (!string.IsNullOrEmpty(user.phone))
+        {
+            item.phone = user.phone;
+        }
+        if (!string.IsNullOrEmpty(user.dob.ToString()))
+        {
+            item.dob = user.dob;
+        }
+        if (!string.IsNullOrEmpty(user.address))
+        {
+            item.address = user.address;
+        }
+        if (!string.IsNullOrEmpty(user.profile_photo))
+        {
+            item.profile_photo = user.profile_photo;
+        }
+        if (!string.IsNullOrEmpty(user.is_available.ToString()))
+        {
+            item.is_available = user.is_available;
+        }
+
+        item.updated_at = DateTime.Now;
+
+        return item;
+    }
+
+    private TblUsers UserMapping(StudentsViewModels user)
     {
         return new TblUsers
         {
@@ -110,13 +179,13 @@ public class StudentRepository : IStudentRepository
         };
     }
 
-    private UsersViewModels UsersViewModelsMapping(TblUsers user)
+    private StudentsViewModels UsersViewModelsMapping(TblUsers user)
     {
-        return new UsersViewModels()
+        return new StudentsViewModels()
         {
             username = user.username,
             email = user.email,
-            //password = user.password,
+            password = user.password,
             phone = user.phone,
             dob = user.dob,
             address = user.address,

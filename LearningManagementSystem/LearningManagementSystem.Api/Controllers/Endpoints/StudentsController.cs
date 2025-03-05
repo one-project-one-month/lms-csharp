@@ -25,7 +25,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public IActionResult CreateStudent(UsersViewModels user)
+    public IActionResult CreateStudent(StudentsViewModels user)
     {
         var item = _studentRepository.CreateStudent(user);
         return Ok(item);
@@ -35,6 +35,13 @@ public class StudentsController : ControllerBase
     public IActionResult GetStudent(int id)
     {
         var item = _studentRepository.GetStudent(id);
+        return Ok(item);
+    }
+
+    [HttpPatch("UpdateStudent/{id}")]
+    public IActionResult UpdateStudent(int id, StudentsViewModels user)
+    {
+        var item = _studentRepository.UpdateStudent(id, user);
         return Ok(item);
     }
 
