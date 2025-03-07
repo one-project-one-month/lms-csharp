@@ -1,6 +1,7 @@
 ﻿using LearningManagementSystem.DataBase.Data;
 using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.Domain.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Metadata.Internal;
@@ -18,6 +19,9 @@ public class StudentRepository : IStudentRepository
 
     public StudentsViewModels CreateStudent(StudentsViewModels student)
     {
+        var filepath = UploadImage(student.profile_photo_file);
+        student.profile_photo = filepath;
+
         var userModel = UserMapping(student);
 
         var model = _db.Users.Add(userModel);
@@ -195,5 +199,26 @@ public class StudentRepository : IStudentRepository
             created_at = user.created_at,
             updated_at = user.updated_at
         };
+    }
+
+    public string UploadImage(IFormFile file)
+    {
+        var filePath = "";
+        if (file is not null && file.Length > 0)
+        {
+            filePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadImages", file.FileName);
+
+            var uploadDirectory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory!);
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+        }
+        return filePath;
     }
 }

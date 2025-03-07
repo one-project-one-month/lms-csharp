@@ -1,6 +1,7 @@
 ﻿using LearningManagementSystem.DataBase.Models;
 using LearningManagementSystem.Domain.Services.UsersServices;
 using LearningManagementSystem.Domain.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
 public interface IStudentRepository
 {
-    StudentsViewModels CreateStudent(StudentsViewModels user);
+    StudentsViewModels CreateStudent(StudentsViewModels student);
 
     List<StudentsViewModels> GetStudents();
 
@@ -20,4 +21,6 @@ public interface IStudentRepository
     bool DeleteStudent(int id);
 
     StudentsViewModels UpdateStudent(int id, StudentsViewModels student);
+
+    string UploadImage(IFormFile file);
 }

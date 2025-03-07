@@ -25,7 +25,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public IActionResult CreateStudent(StudentsViewModels user)
+    public IActionResult CreateStudent([FromForm] StudentsViewModels user)
     {
         var item = _studentRepository.CreateStudent(user);
         return Ok(item);

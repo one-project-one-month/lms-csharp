@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,9 @@ public class StudentsViewModels
     public string phone { get; set; } = null!;
     public DateOnly dob { get; set; }
     public string address { get; set; } = null!;
+    public IFormFile profile_photo_file { get; set; } = null!;
+
+    [JsonIgnore]
     public string profile_photo { get; set; } = null!;
     public bool is_available { get; set; } = false;
     public DateTime created_at { get; set; }
