@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers.Endpoints
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class InstructorsController : ControllerBase
     {
@@ -15,7 +16,7 @@ namespace LearningManagementSystem.Api.Controllers.Endpoints
             _instructorRepository = instructorRepository;
         }
 
-        [HttpPost("Register")]
+        [HttpPost]
         public IActionResult CreateInstructors(InstructorViewModels reqModel)
         {
             var items = _instructorRepository.CreateInstructor(reqModel);
