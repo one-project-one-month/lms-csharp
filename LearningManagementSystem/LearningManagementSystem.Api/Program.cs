@@ -28,6 +28,7 @@ using LearningManagementSystem.Domain.Services.UserServices;
 
 using LearningManagementSystem.Domain.Services.StudentsServieces;
 using LearningManagementSystem.Domain.Services.CourseService;
+using LearningManagementSystem.Domain.Services.InstructorServices;
 
 
 
@@ -177,6 +178,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
 
