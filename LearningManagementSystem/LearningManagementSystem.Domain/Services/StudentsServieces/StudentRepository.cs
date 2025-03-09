@@ -84,6 +84,9 @@ public class StudentRepository : IStudentRepository
 
         if (item is null) return null;
 
+        var filepath = UploadImage(student.profile_photo_file);
+        student.profile_photo = filepath;
+
         item = UpdateUserDetail(id, student, item);
 
         _db.Entry(item).State = EntityState.Modified;
