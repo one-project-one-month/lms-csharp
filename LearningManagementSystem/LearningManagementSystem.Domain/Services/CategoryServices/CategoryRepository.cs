@@ -55,6 +55,8 @@ public class CategoryRepository : ICategoryRepository
             _db.Category.Add(model);
             await _db.SaveChangesAsync();
 
+            category = CategoryViewModelsMapping(model);
+
             return category;
         }
         catch 
@@ -160,7 +162,7 @@ public class CategoryRepository : ICategoryRepository
     {
         return new CategoryViewModels
         {
-            //id = category.id,
+            id = category.id,
             name = category.name,
             created_at = category.created_at,
             updated_at = category.updated_at
