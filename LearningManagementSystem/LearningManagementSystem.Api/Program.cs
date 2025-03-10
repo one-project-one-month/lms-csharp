@@ -33,6 +33,37 @@ using LearningManagementSystem.Domain.Services.CourseService;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS service configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
+// // Alternative with specific origins
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("CustomPolicy",
+//         builder =>
+//         {
+//             builder
+//                 .WithOrigins(
+//                     "http://localhost:3000",  // React default
+//                     "http://localhost:4200",  // Angular default
+//                     "http://localhost:5173"   // Vite default
+//                 )
+//                 .AllowAnyMethod()
+//                 .AllowAnyHeader()
+//                 .AllowCredentials();
+//         });
+// });
+
 //JWT Services
 builder.Services.AddAuthentication(options =>
 {
@@ -154,17 +185,27 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
-builder.Services.AddControllers().AddFluentValidation(fv =>
-{
-    fv.RegisterValidatorsFromAssemblyContaining<RegistrationValidator>();
-    fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
-});
+// builder.Services.AddControllers().AddFluentValidation(fv =>
+// {
+//     fv.RegisterValidatorsFromAssemblyContaining<RegistrationValidator>();
+//     fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
+//     fv.RegisterValidatorsFromAssemblyContaining<RefreshTokenValidator>();
+// });
+
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<RegistrationValidator>()
+    .AddValidatorsFromAssemblyContaining<LoginRequestValidator>()
+    .AddValidatorsFromAssemblyContaining<RefreshTokenValidator>();
 
 builder.Services.AddScoped<IValidator<UsersViewModels>, RegistrationValidator>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
+builder.Services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenValidator>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IResponseService, ResponseService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
@@ -234,6 +275,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll"); // Enable CORS policy and make sure to add before UseRouting
 app.UseRouting();
 
 //app.UseAuthorization();

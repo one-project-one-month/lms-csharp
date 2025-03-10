@@ -28,12 +28,12 @@ namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
                 .Must(BeUniqueEmail).WithMessage("Email already exists");
 
             RuleFor(x => x.password)
-                .NotEmpty();
-            // .MinimumLength(8)
-            // .Matches("[A-Z]").WithMessage("Password must contain uppercase letter")
-            // .Matches("[a-z]").WithMessage("Password must contain lowercase letter")
-            // .Matches("[0-9]").WithMessage("Password must contain number")
-            // .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain special character");
+                .NotEmpty()
+            .MinimumLength(8)
+            .Matches("[A-Z]").WithMessage("Password must contain uppercase letter")
+            .Matches("[a-z]").WithMessage("Password must contain lowercase letter")
+            .Matches("[0-9]").WithMessage("Password must contain number")
+            .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain special character");
 
             RuleFor(x => x.phone)
                 .NotEmpty()
@@ -51,6 +51,14 @@ namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
             RuleFor(x => x.role_id)
                 .NotEmpty();
             // .WithMessage("Role must be either 'student', 'instructor', or 'admin'");
+
+            RuleFor(x => x.nrc)
+                .NotEmpty()
+                .Matches(@"^\d{1,2}/\w+\(N\w+\)\d{6}$")
+                .WithMessage("Invalid NRC format");
+
+            // RuleFor(x => x.profile_photo);
+
         }
 
         private bool BeUniqueUsername(string username)
@@ -69,5 +77,5 @@ namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
             return age >= 13;
         }
     }
-    
+
 }
