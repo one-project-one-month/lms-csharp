@@ -17,21 +17,21 @@ public class UserValidator : AbstractValidator<UserRequest>
         RuleFor(x => x.username)
       .NotEmpty()
       .MinimumLength(3)
-      .MaximumLength(50)
-      .Must(BeUniqueUsername).WithMessage("Username already exists");
+      .MaximumLength(50);
+        //   .Must(BeUniqueUsername).WithMessage("Username does not exists");
 
         RuleFor(x => x.email)
             .NotEmpty()
-            .EmailAddress()
-            .Must(BeUniqueEmail).WithMessage("Email already exists");
+            .EmailAddress();
+        // .Must(BeUniqueEmail).WithMessage("Email does not exists");
 
         RuleFor(x => x.password)
-            .NotEmpty();
-        // .MinimumLength(8)
-        // .Matches("[A-Z]").WithMessage("Password must contain uppercase letter")
-        // .Matches("[a-z]").WithMessage("Password must contain lowercase letter")
-        // .Matches("[0-9]").WithMessage("Password must contain number")
-        // .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain special character");
+            .NotEmpty()
+        .MinimumLength(8)
+        .Matches("[A-Z]").WithMessage("Password must contain uppercase letter")
+        .Matches("[a-z]").WithMessage("Password must contain lowercase letter")
+        .Matches("[0-9]").WithMessage("Password must contain number")
+        .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain special character");
 
         RuleFor(x => x.phone)
             .NotEmpty()
@@ -65,12 +65,12 @@ public class UserValidator : AbstractValidator<UserRequest>
 
     private bool BeUniqueUsername(string username)
     {
-        return !_context.Users.Any(u => u.username == username);
+        return _context.Users.Any(u => u.username == username);
     }
 
     private bool BeUniqueEmail(string email)
     {
-        return !_context.Users.Any(u => u.email == email);
+        return _context.Users.Any(u => u.email == email);
     }
 
     private bool BeValidAge(DateOnly dob)

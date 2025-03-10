@@ -54,8 +54,10 @@ namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
 
             RuleFor(x => x.nrc)
                 .NotEmpty()
-                .Matches(@"^\d{1,2}/\w+\(N\w+\)\d{6}$")
-                .WithMessage("Invalid NRC format");
+                .Matches(@"^\d{1,2}/[A-Za-z]+\([N][A-Za-z]+\)\d{6}$")
+                .WithMessage("Invalid NRC format. Format should be: XX/XXXXX(NXXXXX)XXXXXX");
+            // .Matches(@"^\d{1,2}/\w+\(N\w+\)\d{6}$")
+            // .WithMessage("Invalid NRC format");
 
             // RuleFor(x => x.profile_photo);
 
