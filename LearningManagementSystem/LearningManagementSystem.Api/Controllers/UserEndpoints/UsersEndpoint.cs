@@ -4,12 +4,14 @@ using LearningManagementSystem.Domain.Services.ResponseService;
 using LearningManagementSystem.Domain.Services.UserServices;
 using LearningManagementSystem.Domain.Services.UserServices.Requests;
 using LearningManagementSystem.Domain.Services.UserServices.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers.UserEndpoints
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("api/Users")]
     [ApiController]
     public class UsersEndpoint : ControllerBase
     {
@@ -43,7 +45,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(result);
         }
 
-        [HttpGet("instructor")]
+        [HttpGet("getInstructor/{id}")]
         public async Task<IActionResult> InstructorEndpoint(int id)
         {
             var instructor = await _userServices.GetInstructor(id);
@@ -54,7 +56,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return Ok(instructor);
         }
 
-        [HttpGet("student")]
+        [HttpGet("getStudent/{id}")]
         public async Task<IActionResult> StudentsEndpoint(int id)
         {
             var student = await _userServices.GetStudent(id);
@@ -65,7 +67,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return Ok(student);
         }
 
-        [HttpGet("instructors")]
+        [HttpGet("getInstructors")]
         public async Task<IActionResult> InstructorsEndpoint()
         {
             var instructors = await _userServices.GetInstructors();
@@ -76,7 +78,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(instructors);
         }
 
-        [HttpGet("students")]
+        [HttpGet("getStudents")]
         public async Task<IActionResult> StudentsEndpoint()
         {
             var students = await _userServices.GetStudents();
@@ -88,7 +90,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(students);
         }
 
-        [HttpPatch("uppdate/{id}")]
+        [HttpPatch("patch/{id}")]
         public async Task<IActionResult> PatchUser(int id, UserRequest user)
         {
             var validationResult = await _userRequestValidator.ValidateAsync(user);
@@ -107,6 +109,13 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserRequest user)
         {
+            // First check if user is null
+            if (user == null)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError("User request cannot be null")
+                );
+            }
             var validationResult = await _userRequestValidator.ValidateAsync(user);
             if (!validationResult.IsValid)
             {
@@ -120,7 +129,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(result);
         }
 
-        [HttpGet("users")]
+        [HttpGet("getUsers")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userServices.GetUsers();
@@ -132,7 +141,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(users);
         }
 
-        [HttpGet("user")]
+        [HttpGet("getUser/{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userServices.GetUser(id);
@@ -143,7 +152,7 @@ namespace LearningManagementSystem.Api.Controllers.UserEndpoints
             return _responseService.Response(user);
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _userServices.DeleteUser(id);
