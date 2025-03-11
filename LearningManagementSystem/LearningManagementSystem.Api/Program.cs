@@ -170,7 +170,7 @@ builder.Services.AddScoped<IResponseService, ResponseService>();
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
-// I add some folders in here
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -183,10 +183,9 @@ builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
 
+builder.Services.AddScoped<ISocial_linksRepository, Social_linksRepository>(); 
 
-//builder.Services.AddTransient<IUserRepository, UserRepository>();
-//builder.Services.AddSingleton<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {

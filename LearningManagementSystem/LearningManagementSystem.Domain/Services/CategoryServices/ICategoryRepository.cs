@@ -2,7 +2,7 @@
 
 public interface ICategoryRepository
 {
-    Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
+    //Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category);
 
     Task<CategoryViewModels> CreateCategory(CategoryViewModels category);
 
