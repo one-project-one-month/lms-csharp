@@ -1,8 +1,3 @@
-using System;
-using LearningManagementSystem.Domain.Services.ResponseService;
-using LearningManagementSystem.Domain.Services.UserServices.Requests;
-using LearningManagementSystem.Domain.Services.UserServices.Responses;
-
 namespace LearningManagementSystem.Domain.Services.UserServices;
 
 public interface IUserServices

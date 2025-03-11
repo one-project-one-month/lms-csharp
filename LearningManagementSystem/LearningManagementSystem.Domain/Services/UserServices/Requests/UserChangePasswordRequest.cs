@@ -1,5 +1,3 @@
-using System;
-
 namespace LearningManagementSystem.Domain.Services.UserServices.Requests;
 
 public class UserChangePasswordRequest
