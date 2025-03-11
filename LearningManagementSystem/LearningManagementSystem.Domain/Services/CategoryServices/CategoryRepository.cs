@@ -9,40 +9,40 @@ public class CategoryRepository : ICategoryRepository
         _db = db;
     }
 
-    public Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category)
-    {
-        try
-        {
-            category.updated_at = null; // Need to amend and take out
+    //public Result<CategoryResponseModel> CreateCategory1(CategoryViewModels category)
+    //{
+    //    try
+    //    {
+    //        category.updated_at = null; // Need to amend and take out
 
-            var model = CategoryMapping(category);
+    //        var model = CategoryMapping(category);
 
-            _db.Category.Add(model);
-            _db.SaveChanges();
+    //        _db.Category.Add(model);
+    //        _db.SaveChanges();
 
-            var item = new CategoryResponseModel()
-            {
-                Category = category
-            };
+    //        var item = new CategoryResponseModel()
+    //        {
+    //            Category = category
+    //        };
 
-            var result = Result<CategoryResponseModel>
-                .Success(item, "Category created successfully.");
+    //        var result = Result<CategoryResponseModel>
+    //            .Success(item, "Category created successfully.");
 
-            return result;
-        }
-        catch (ValidationException ex)
-        {
-            return Result<CategoryResponseModel>.ValidationError("Validation Error: " + ex.Message);
-        }
-        catch (SystemException ex)
-        {
-            return Result<CategoryResponseModel>.SystemError("System Error: " + ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return Result<CategoryResponseModel>.Error("An unexpected error occurred: " + ex.Message);
-        }
-    }
+    //        return result;
+    //    }
+    //    catch (ValidationException ex)
+    //    {
+    //        return Result<CategoryResponseModel>.ValidationError("Validation Error: " + ex.Message);
+    //    }
+    //    catch (SystemException ex)
+    //    {
+    //        return Result<CategoryResponseModel>.SystemError("System Error: " + ex.Message);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result<CategoryResponseModel>.Error("An unexpected error occurred: " + ex.Message);
+    //    }
+    //}
 
     public async Task<CategoryViewModels> CreateCategory(CategoryViewModels category)
     {
@@ -52,7 +52,7 @@ public class CategoryRepository : ICategoryRepository
 
             var model = CategoryMapping(category);
 
-            _db.Category.Add(model);
+            await _db.Category.AddAsync(model);
             await _db.SaveChangesAsync();
 
             category = CategoryViewModelsMapping(model);
@@ -73,9 +73,9 @@ public class CategoryRepository : ICategoryRepository
                 x.isDeleted == false)
             .ToListAsync();
 
-        var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
+        var viewModels = model.Select(CategoryViewModelsMapping).ToList();
 
-        return userViewModels;
+        return viewModels;
     }
 
     public async Task<List<CategoryViewModels>> GetCategory(int id)
@@ -85,9 +85,9 @@ public class CategoryRepository : ICategoryRepository
             .Where(x => x.isDeleted == false && x.id == id) // need to check with roles
             .ToListAsync();
 
-        var userViewModels = model.Select(CategoryViewModelsMapping).ToList();
+        var viewModels = model.Select(CategoryViewModelsMapping).ToList();
 
-        return userViewModels;
+        return viewModels;
     }
 
     public async Task<CategoryViewModels> UpdateCategory(int id, CategoryViewModels category)
@@ -101,7 +101,7 @@ public class CategoryRepository : ICategoryRepository
         item = UpdateCategoryDetails(id, category, item); // Updating Users info
 
         _db.Entry(item).State = EntityState.Modified;
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         var model = CategoryViewModelsMapping(item);
 
@@ -119,7 +119,7 @@ public class CategoryRepository : ICategoryRepository
         item = UpdateCategoryDetails(id, category, item); // Updating Users info
 
         _db.Entry(item).State = EntityState.Modified;
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         var model = CategoryViewModelsMapping(item);
         return model;
@@ -139,7 +139,7 @@ public class CategoryRepository : ICategoryRepository
         item.isDeleted = true;
 
         _db.Entry(item).State = EntityState.Modified;
-        var result = _db.SaveChanges();
+        var result = await _db.SaveChangesAsync();
 
         return result > 0;
     }
@@ -150,7 +150,7 @@ public class CategoryRepository : ICategoryRepository
         return new TblCategory
         {
             //id = Guid.NewGuid(),
-            id = 0,
+            id = category.id,
             name = category.name,
             created_at = category.created_at,
             updated_at = category.updated_at,
