@@ -1,5 +1,3 @@
-using System;
-
 namespace LearningManagementSystem.Domain.Services.ResponseService;
 
 public class Response<T>

@@ -1,8 +1,4 @@
-﻿using LearningManagementSystem.Domain.Services.StudentsServieces;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-
-namespace LearningManagementSystem.Api.Controllers.Endpoints;
+﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
 [Route("api/[controller]")]
 [ApiController]

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace LearningManagementSystem.Domain.ViewModels;
+﻿namespace LearningManagementSystem.Domain.ViewModels;
 
 public class Social_linksViewModels
 {

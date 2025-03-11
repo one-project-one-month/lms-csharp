@@ -1,5 +1,4 @@
-﻿
-namespace LearningManagementSystem.Domain.Services.Social_linksService;
+﻿namespace LearningManagementSystem.Domain.Services.Social_linksService;
 
 public interface ISocial_linksRepository
 {
