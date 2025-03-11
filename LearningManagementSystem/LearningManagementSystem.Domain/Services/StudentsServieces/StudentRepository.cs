@@ -1,12 +1,4 @@
-﻿using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Pomelo.EntityFrameworkCore.MySql.Metadata.Internal;
-
-namespace LearningManagementSystem.Domain.Services.StudentsServieces;
+﻿namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
 public class StudentRepository : IStudentRepository
 {
@@ -102,7 +94,7 @@ public class StudentRepository : IStudentRepository
             .AsNoTracking()
             .Where(x => x.id == id && x.isDeleted == false)
             .FirstOrDefault();
-        if(studentUser is null) return false;
+        if (studentUser is null) return false;
 
         studentUser.isDeleted = true;
 

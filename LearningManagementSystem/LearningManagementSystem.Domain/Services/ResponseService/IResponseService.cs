@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace LearningManagementSystem.Domain.Services.ResponseService;
 
 public interface IResponseService

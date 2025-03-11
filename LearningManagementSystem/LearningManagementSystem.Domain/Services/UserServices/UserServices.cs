@@ -1,11 +1,3 @@
-using System;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.Domain.Services.ResponseService;
-using LearningManagementSystem.Domain.Services.UserServices.Requests;
-using LearningManagementSystem.Domain.Services.UserServices.Responses;
-using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Generators;
-
 namespace LearningManagementSystem.Domain.Services.UserServices;
 
 public class UserServices : IUserServices

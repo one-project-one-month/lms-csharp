@@ -1,5 +1,3 @@
-using System;
-
 namespace LearningManagementSystem.Domain.Services.UserServices.Responses;
 
 public class UserChangePasswordResponse

@@ -1,6 +1,4 @@
-﻿// Global using directives
-
-global using System.ComponentModel.DataAnnotations;
+﻿global using System.ComponentModel.DataAnnotations;
 global using LearningManagementSystem.DataBase.Data;
 global using LearningManagementSystem.DataBase.Models;
 global using LearningManagementSystem.Domain.Models;
@@ -8,3 +6,11 @@ global using LearningManagementSystem.Domain.ViewModels;
 global using Microsoft.EntityFrameworkCore;
 global using TblUsers = LearningManagementSystem.DataBase.Models.TblUsers;
 global using System.Text.Json.Serialization;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.JsonPatch;
+global using FluentValidation;
+global using Microsoft.AspNetCore.Mvc;
+global using LearningManagementSystem.Domain.Services.ResponseService;
+global using LearningManagementSystem.Domain.Services.UserServices.Requests;
+global using LearningManagementSystem.Domain.Services.UserServices.Responses;

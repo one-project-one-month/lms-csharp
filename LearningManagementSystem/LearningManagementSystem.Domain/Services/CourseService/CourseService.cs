@@ -1,18 +1,4 @@
-﻿using Azure;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Models;
-using LearningManagementSystem.Domain.Services.CategoryServices;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace LearningManagementSystem.Domain.Services.CourseService
 {
@@ -23,7 +9,7 @@ namespace LearningManagementSystem.Domain.Services.CourseService
         public CourseService(AppDbContext context)
         {
             _context = context;
-        }     
+        }
 
 
         // Retrieve all courses
@@ -86,7 +72,7 @@ namespace LearningManagementSystem.Domain.Services.CourseService
                     .Where(c => c.id == courseId && !c.isDeleted)
                     .Include(c => c.TblInstructor)
                     .ThenInclude(i => i.TblUser)
-                    .Include(c => c.TblCategory)                  
+                    .Include(c => c.TblCategory)
                     .FirstOrDefaultAsync();
 
                 if (course == null)
@@ -146,7 +132,7 @@ namespace LearningManagementSystem.Domain.Services.CourseService
         //    {
         //        throw new InvalidOperationException("Invalid Instructor Id");
         //    }
-        
+
         //    TblCourses newCourse = MapRequestToCourseEntity(request , image);
 
         //    _context.Courses.Add(newCourse);
@@ -281,7 +267,7 @@ namespace LearningManagementSystem.Domain.Services.CourseService
 
 
 
-        private  TblCourses MapRequestToCourseEntity(CourseRequestModel request)
+        private TblCourses MapRequestToCourseEntity(CourseRequestModel request)
         {
             var category = _context.Category.Find(request.categoryId);
             if (category == null)
