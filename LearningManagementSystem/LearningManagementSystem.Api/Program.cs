@@ -2,6 +2,7 @@ using FluentValidation.AspNetCore;
 using LearningManagementSystem.Domain.Services.AuthServices;
 using LearningManagementSystem.Domain.Services.AuthServices.Requests;
 using LearningManagementSystem.Domain.Services.AuthServices.Validators;
+using LearningManagementSystem.Domain.Services.UploadImage;
 using LearningManagementSystem.Domain.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -166,6 +167,8 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ISocial_linksRepository, Social_linksRepository>();
 
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+
+builder.Services.AddScoped<IUploadImageRepository, UploadImageRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {

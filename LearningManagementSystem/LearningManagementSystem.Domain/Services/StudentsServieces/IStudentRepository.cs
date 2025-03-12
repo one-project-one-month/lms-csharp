@@ -11,6 +11,4 @@ public interface IStudentRepository
     bool DeleteStudent(int id);
 
     StudentsViewModels UpdateStudent(int id, StudentsViewModels student);
-
-    string UploadImage(IFormFile file);
 }
