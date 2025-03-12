@@ -153,6 +153,8 @@ builder.Services.AddScoped<ISocial_linksRepository, Social_linksRepository>();
 
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
+builder.Services.AddScoped<IUploadImageRepository, UploadImageRepository>();
+
 builder.Services.AddSwaggerGen(options =>
 {
     //options.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS API", Version = "v1" });
