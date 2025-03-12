@@ -1,17 +1,3 @@
-using FluentValidation.AspNetCore;
-using LearningManagementSystem.Domain.Services.AuthServices;
-using LearningManagementSystem.Domain.Services.AuthServices.Requests;
-using LearningManagementSystem.Domain.Services.AuthServices.Validators;
-using LearningManagementSystem.Domain.Validators;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 //JWT Services
@@ -32,7 +18,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
@@ -166,6 +152,8 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ISocial_linksRepository, Social_linksRepository>();
 
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+
+builder.Services.AddScoped<IUploadImageRepository, UploadImageRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {
