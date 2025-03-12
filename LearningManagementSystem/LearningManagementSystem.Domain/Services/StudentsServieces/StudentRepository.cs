@@ -1,17 +1,21 @@
-﻿namespace LearningManagementSystem.Domain.Services.StudentsServieces;
+﻿using LearningManagementSystem.Domain.Services.UploadImage;
+
+namespace LearningManagementSystem.Domain.Services.StudentsServieces;
 
 public class StudentRepository : IStudentRepository
 {
     private readonly AppDbContext _db;
+    private readonly IUploadImageRepository _uploadImageRepository;
 
-    public StudentRepository(AppDbContext db)
+    public StudentRepository(AppDbContext db, IUploadImageRepository uploadImageRepository)
     {
         _db = db;
+        _uploadImageRepository = uploadImageRepository;
     }
 
     public StudentsViewModels CreateStudent(StudentsViewModels student)
     {
-        var filepath = UploadImage(student.profile_photo_file);
+        var filepath = _uploadImageRepository.UploadImage(student.profile_photo_file);
         student.profile_photo = filepath;
 
         var userModel = UserMapping(student);
@@ -76,7 +80,7 @@ public class StudentRepository : IStudentRepository
 
         if (item is null) return null;
 
-        var filepath = UploadImage(student.profile_photo_file);
+        var filepath = _uploadImageRepository.UploadImage(student.profile_photo_file);
         student.profile_photo = filepath;
 
         item = UpdateUserDetail(id, student, item);
@@ -190,26 +194,5 @@ public class StudentRepository : IStudentRepository
             created_at = user.created_at,
             updated_at = user.updated_at
         };
-    }
-
-    public string UploadImage(IFormFile file)
-    {
-        var filePath = "";
-        if (file is not null && file.Length > 0)
-        {
-            filePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadImages", file.FileName);
-
-            var uploadDirectory = Path.GetDirectoryName(filePath);
-            if (!Directory.Exists(uploadDirectory))
-            {
-                Directory.CreateDirectory(uploadDirectory!);
-            }
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-        }
-        return filePath;
     }
 }
