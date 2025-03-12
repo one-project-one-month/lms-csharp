@@ -10,6 +10,7 @@ global using LearningManagementSystem.Domain.Services.LessonServices;
 global using LearningManagementSystem.Domain.Services.StudentsServieces;
 global using LearningManagementSystem.Domain.Services.ResponseService;
 global using LearningManagementSystem.Domain.Services.UserServices;
+global using LearningManagementSystem.Domain.Services.UploadImage;
 global using LearningManagementSystem.Domain.Services.UserServices.Requests;
 global using LearningManagementSystem.DataBase.Models;
 global using LearningManagementSystem.Domain.Services.AuthServices;
