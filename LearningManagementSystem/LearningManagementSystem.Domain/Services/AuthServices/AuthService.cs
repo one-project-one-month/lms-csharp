@@ -49,8 +49,43 @@ public class AuthService
 
         var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        // only save to database if no valid token exist
-        if (existingToken == null)
+        #region old code
+        // if (existingToken.updated_at < DateTime.UtcNow)
+        // {
+        //     existingToken.token = generatedToken;
+        //     existingToken.updated_at = DateTime.UtcNow.AddMonths(1);
+
+        //     await _contxt.SaveChangesAsync();
+        // }
+
+        // // only save to database if no valid token exist
+        // if (existingToken == null)
+        // {
+        //     var tokenEntity = new TblTokens
+        //     {
+        //         user_id = user.id,
+        //         token = generatedToken,
+        //         created_at = DateTime.UtcNow,
+        //         updated_at = DateTime.UtcNow.AddMonths(1)
+        //     };
+
+        //     await _contxt.Tokens.AddAsync(tokenEntity);
+
+        //     await _contxt.SaveChangesAsync();
+        // }
+        #endregion
+
+        if (existingToken != null)
+        {
+            if (existingToken.updated_at < DateTime.UtcNow)
+            {
+                existingToken.token = generatedToken;
+                existingToken.updated_at = DateTime.UtcNow.AddMonths(1);
+
+                await _contxt.SaveChangesAsync();
+            }
+        }
+        else 
         {
             var tokenEntity = new TblTokens
             {
@@ -64,9 +99,6 @@ public class AuthService
 
             await _contxt.SaveChangesAsync();
         }
-
-
-
         return generatedToken;
     }
 }

@@ -29,12 +29,17 @@ public class ResponseService : IResponseService
 
         };
 
+        // ApiDetails details = null;
+        // object responseData = response.Data;
+
+
         var resp = new ApiResponse
         {
             Status = response.Type.ToString(),
             Data = response.Data,
             Error = response.IsSuccess ? null : response.Message,
-            Message = response.IsSuccess ? response.Message : null
+            Message = response.IsSuccess ? response.Message : null,
+            // Details = response.Data as ApiDetails ?? new ApiDetails()
         };
 
         return new ObjectResult(resp) { StatusCode = statusCode };

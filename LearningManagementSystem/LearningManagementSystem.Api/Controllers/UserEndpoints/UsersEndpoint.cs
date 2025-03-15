@@ -1,6 +1,7 @@
 namespace LearningManagementSystem.Api.Controllers.UserEndpoints;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/Users")]
 [ApiController]
 public class UsersEndpoint : ControllerBase
 {
@@ -11,17 +12,18 @@ public class UsersEndpoint : ControllerBase
     private readonly IValidator<UserRequest> _userRequestValidator;
     private readonly IResponseService _responseService;
 
-
-    public UsersEndpoint(AppDbContext context,
-     IUserServices userServices,
-      IValidator<UserRequest> userRequestValidator,
-      IResponseService responseService)
+    public UsersEndpoint(
+        AppDbContext context,
+        IUserServices userServices,
+        IValidator<UserRequest> userRequestValidator,
+        IResponseService responseService)
     {
         _context = context;
         _userServices = userServices;
         _userRequestValidator = userRequestValidator;
         _responseService = responseService;
     }
+
 
     [HttpPut("change-password")]
     public async Task<IActionResult> ChangePassword(UserChangePasswordRequest request)
@@ -34,9 +36,10 @@ public class UsersEndpoint : ControllerBase
         return _responseService.Response(result);
     }
 
-    [HttpGet("instructor")]
+
+    [HttpGet("getInstructor/{id}")]
     public async Task<IActionResult> InstructorEndpoint(int id)
-    {
+    { 
         var instructor = await _userServices.GetInstructor(id);
         if (instructor == null)
         {
@@ -45,9 +48,9 @@ public class UsersEndpoint : ControllerBase
         return Ok(instructor);
     }
 
-    [HttpGet("student")]
+    [HttpGet("getStudent/{id}")]
     public async Task<IActionResult> StudentsEndpoint(int id)
-    {
+    { 
         var student = await _userServices.GetStudent(id);
         if (student is null)
         {
@@ -56,7 +59,7 @@ public class UsersEndpoint : ControllerBase
         return Ok(student);
     }
 
-    [HttpGet("instructors")]
+    [HttpGet("getInstructors")]
     public async Task<IActionResult> InstructorsEndpoint()
     {
         var instructors = await _userServices.GetInstructors();
@@ -67,7 +70,7 @@ public class UsersEndpoint : ControllerBase
         return _responseService.Response(instructors);
     }
 
-    [HttpGet("students")]
+    [HttpGet("getStudents")]
     public async Task<IActionResult> StudentsEndpoint()
     {
         var students = await _userServices.GetStudents();
@@ -79,14 +82,15 @@ public class UsersEndpoint : ControllerBase
         return _responseService.Response(students);
     }
 
-    [HttpPatch("uppdate/{id}")]
+    [HttpPatch("patch/{id}")]
     public async Task<IActionResult> PatchUser(int id, UserRequest user)
     {
         var validationResult = await _userRequestValidator.ValidateAsync(user);
         if (!validationResult.IsValid)
         {
             return _responseService.Response(
-                Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
+                Response<object>.ValidationError(validationResult.Errors
+                .First().ErrorMessage)
             );
         }
 
@@ -98,7 +102,9 @@ public class UsersEndpoint : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> UpdateUser(int id, UserRequest user)
     {
-        var validationResult = await _userRequestValidator.ValidateAsync(user);
+        var validationResult = await _userRequestValidator
+            .ValidateAsync(instance: user);
+
         if (!validationResult.IsValid)
         {
             return _responseService.Response(
@@ -107,11 +113,10 @@ public class UsersEndpoint : ControllerBase
         }
 
         var result = await _userServices.UpdateUser(id, user);
-
         return _responseService.Response(result);
     }
 
-    [HttpGet("users")]
+    [HttpGet("getUsers")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _userServices.GetUsers();
@@ -123,7 +128,8 @@ public class UsersEndpoint : ControllerBase
         return _responseService.Response(users);
     }
 
-    [HttpGet("user")]
+
+    [HttpGet("getUser/{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
         var user = await _userServices.GetUser(id);
@@ -134,7 +140,7 @@ public class UsersEndpoint : ControllerBase
         return _responseService.Response(user);
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var result = await _userServices.DeleteUser(id);
@@ -144,4 +150,6 @@ public class UsersEndpoint : ControllerBase
         }
         return Ok(result);
     }
+    
 }
+
