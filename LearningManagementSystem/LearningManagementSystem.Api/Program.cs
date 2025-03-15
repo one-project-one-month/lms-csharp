@@ -13,24 +13,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// // Alternative with specific origins
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("CustomPolicy",
-//         builder =>
-//         {
-//             builder
-//                 .WithOrigins(
-//                     "http://localhost:3000",  // React default
-//                     "http://localhost:4200",  // Angular default
-//                     "http://localhost:5173"   // Vite default
-//                 )
-//                 .AllowAnyMethod()
-//                 .AllowAnyHeader()
-//                 .AllowCredentials();
-//         });
-// });
-
 //JWT Services
 builder.Services.AddAuthentication(options =>
 {
