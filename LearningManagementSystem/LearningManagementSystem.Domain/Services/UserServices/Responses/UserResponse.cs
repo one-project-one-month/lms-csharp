@@ -1,6 +1,3 @@
-using System;
-using System.Text.Json.Serialization;
-
 namespace LearningManagementSystem.Domain.Services.UserServices.Responses;
 
 public class UserResponse

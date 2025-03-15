@@ -1,10 +1,21 @@
-﻿// Global using directives
-
-global using System.ComponentModel.DataAnnotations;
-global using LearningManagementSystem.DataBase.Data;
+﻿global using LearningManagementSystem.DataBase.Data;
 global using LearningManagementSystem.DataBase.Models;
 global using LearningManagementSystem.Domain.Models;
 global using LearningManagementSystem.Domain.ViewModels;
-global using Microsoft.EntityFrameworkCore;
+global using LearningManagementSystem.Domain.Services.ResponseService;
+global using LearningManagementSystem.Domain.Services.UserServices.Requests;
+global using LearningManagementSystem.Domain.Services.UserServices.Responses;
 global using TblUsers = LearningManagementSystem.DataBase.Models.TblUsers;
+global using System.ComponentModel.DataAnnotations;
 global using System.Text.Json.Serialization;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.JsonPatch;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
+global using FluentValidation;

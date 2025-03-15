@@ -23,7 +23,6 @@ namespace LearningManagementSystem.DataBase.Models
         [Column(TypeName = "bit")]
         public bool is_completed { get; set; } = false;
 
-        [Required]
         [Column(TypeName = "datetime")]
         public DateTime? completed_date { get; set; }
 

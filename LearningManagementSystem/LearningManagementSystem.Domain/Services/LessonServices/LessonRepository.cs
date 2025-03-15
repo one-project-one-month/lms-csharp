@@ -1,181 +1,172 @@
-﻿using FluentValidation;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Models;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿namespace LearningManagementSystem.Domain.Services.LessonServices;
 
-namespace LearningManagementSystem.Domain.Services.LessonServices
+public class LessonRepository : ILessonRepository
 {
-    public class LessonRepository : ILessonRepository
+    private readonly AppDbContext _db;
+    private readonly IValidator<LessonViewModel> _validator;
+
+    public LessonRepository(AppDbContext db, IValidator<LessonViewModel> validator)
     {
-        private readonly AppDbContext _db;
-        private readonly IValidator<LessonViewModel> _validator;
+        _db = db;
+        _validator = validator;
+    }
 
-        public LessonRepository(AppDbContext db, IValidator<LessonViewModel> validator)
+    public Result<LessonResponseModel> CreateLesson(LessonViewModel lesson)  //Async await
+    {
+        var validationResult = _validator.Validate(lesson);
+        if (!validationResult.IsValid)
         {
-            _db = db;
-            _validator = validator;
+            var errors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+            return Result<LessonResponseModel>.ValidationError(errors);
         }
-
-        public Result<LessonResponseModel> CreateLesson(LessonViewModel lesson)  //Async await
+        try
         {
-            var validationResult = _validator.Validate(lesson);
-            if (!validationResult.IsValid)
+            var courseExists = _db.Courses.Any(c => c.id == lesson.course_id);
+            if (!courseExists)
             {
-                var errors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return Result<LessonResponseModel>.ValidationError(errors);
+                return Result<LessonResponseModel>.Error("Invalid course_id: The specified course does not exist.");
             }
-            try
+
+            var model = new TblLessons
             {
-                var courseExists = _db.Courses.Any(c => c.id == lesson.course_id);
-                if (!courseExists)
-                {
-                    return Result<LessonResponseModel>.Error("Invalid course_id: The specified course does not exist.");
-                }
-
-                var model = new TblLessons
-                {
-                    course_id = lesson.course_id,
-                    title = lesson.title,
-                    videoUrl = lesson.videoUrl,
-                    lessonDetail = lesson.lessonDetail,
-                    is_available = lesson.is_available,
-                    created_at = DateTime.UtcNow,
-                    updated_at = null,
-                    isDeleted = false
-                };
-
-                _db.Lessons.Add(model);
-                _db.SaveChanges();
-
-                var response = new LessonResponseModel
-                {
-                    Lesson = MapToLessonViewModel(model)
-                };
-
-                return Result<LessonResponseModel>.Success(response, "Lesson created successfully");
-            }
-            catch (Exception ex)
-            {
-                return Result<LessonResponseModel>.SystemError($"Database Error: {ex.InnerException?.Message ?? ex.Message}");
-            }
-        }
-        public List<LessonViewModel> GetLessons()    //Async await
-        {
-            var lessons = _db.Lessons
-                .AsNoTracking()
-                .Where(x => x.isDeleted == false)
-                .Select(MapToLessonViewModel)
-                .ToList();
-
-            return lessons;
-        }
-
-        public LessonViewModel? GetLessonById(int id)   
-        {
-            var lesson = _db.Lessons
-                .AsNoTracking()
-                .FirstOrDefault(x => x.id == id && x.isDeleted == false);
-
-            return lesson != null ? MapToLessonViewModel(lesson) : null;
-        }
-
-        public List<LessonViewModel> GetLessonsByCourseId(int courseId)
-        {
-            var lessons = _db.Lessons
-                .AsNoTracking()
-                .Where(x => x.course_id == courseId && x.isDeleted == false)
-                .Select(MapToLessonViewModel)
-                .ToList();
-
-            return lessons;
-        }
-
-        public LessonViewModel? UpdateLesson(int id, LessonViewModel lesson)
-        {
-            var existingLesson = _db.Lessons
-                .FirstOrDefault(x => x.id == id && x.isDeleted == false);
-
-            if (existingLesson == null) return null;
-
-            existingLesson = UpdateLessonDetails(existingLesson, lesson);
-
-            _db.Entry(existingLesson).State = EntityState.Modified;
-            _db.SaveChanges();
-
-            return MapToLessonViewModel(existingLesson);
-        }
-
-        public LessonViewModel? PatchLesson(int id, LessonViewModel lesson)
-        {
-            var existingLesson = _db.Lessons
-                .FirstOrDefault(x => x.id == id && x.isDeleted == false);
-
-            if (existingLesson == null) return null;
-
-            existingLesson = UpdateLessonDetails(existingLesson, lesson);
-
-            _db.Entry(existingLesson).State = EntityState.Modified;
-            _db.SaveChanges();
-
-            return MapToLessonViewModel(existingLesson);
-        }
-
-        public bool DeleteLesson(int id) 
-        {
-            var lesson = _db.Lessons.FirstOrDefault(x => x.id == id && x.isDeleted == false);
-            if (lesson == null) return false;
-
-            lesson.isDeleted = true;
-            _db.Entry(lesson).State = EntityState.Modified;
-            _db.SaveChanges();
-
-            return true;
-        }
-
-        private static TblLessons MapToLessonEntity(LessonViewModel lesson)
-        {
-            return new TblLessons
-            {
-                id = 0, // Auto-generated by the database
                 course_id = lesson.course_id,
                 title = lesson.title,
                 videoUrl = lesson.videoUrl,
                 lessonDetail = lesson.lessonDetail,
                 is_available = lesson.is_available,
-                created_at = lesson.created_at,
-                updated_at = lesson.updated_at,
+                created_at = DateTime.UtcNow,
+                updated_at = null,
                 isDeleted = false
             };
-        }
 
-        private static LessonViewModel MapToLessonViewModel(TblLessons lesson)
-        {
-            return new LessonViewModel
+            _db.Lessons.Add(model);
+            _db.SaveChanges();
+
+            var response = new LessonResponseModel
             {
-                id = lesson.id,
-                course_id = lesson.course_id,
-                title = lesson.title,
-                videoUrl = lesson.videoUrl,
-                lessonDetail = lesson.lessonDetail,
-                is_available = lesson.is_available,
-                created_at = lesson.created_at,
-                updated_at = lesson.updated_at,
-                isDeleted = lesson.isDeleted
+                Lesson = MapToLessonViewModel(model)
             };
-        }
 
-        private static TblLessons UpdateLessonDetails(TblLessons existingLesson, LessonViewModel lesson)
+            return Result<LessonResponseModel>.Success(response, "Lesson created successfully");
+        }
+        catch (Exception ex)
         {
-            existingLesson.title = lesson.title ?? existingLesson.title;
-            existingLesson.videoUrl = lesson.videoUrl ?? existingLesson.videoUrl;
-            existingLesson.lessonDetail = lesson.lessonDetail ?? existingLesson.lessonDetail;
-            existingLesson.is_available = lesson.is_available;
-            existingLesson.updated_at = DateTime.UtcNow;
-
-            return existingLesson;
+            return Result<LessonResponseModel>.SystemError($"Database Error: {ex.InnerException?.Message ?? ex.Message}");
         }
+    }
+    public List<LessonViewModel> GetLessons()    //Async await
+    {
+        var lessons = _db.Lessons
+            .AsNoTracking()
+            .Where(x => x.isDeleted == false)
+            .Select(MapToLessonViewModel)
+            .ToList();
+
+        return lessons;
+    }
+
+    public LessonViewModel? GetLessonById(int id)
+    {
+        var lesson = _db.Lessons
+            .AsNoTracking()
+            .FirstOrDefault(x => x.id == id && x.isDeleted == false);
+
+        return lesson != null ? MapToLessonViewModel(lesson) : null;
+    }
+
+    public List<LessonViewModel> GetLessonsByCourseId(int courseId)
+    {
+        var lessons = _db.Lessons
+            .AsNoTracking()
+            .Where(x => x.course_id == courseId && x.isDeleted == false)
+            .Select(MapToLessonViewModel)
+            .ToList();
+
+        return lessons;
+    }
+
+    public LessonViewModel? UpdateLesson(int id, LessonViewModel lesson)
+    {
+        var existingLesson = _db.Lessons
+            .FirstOrDefault(x => x.id == id && x.isDeleted == false);
+
+        if (existingLesson == null) return null;
+
+        existingLesson = UpdateLessonDetails(existingLesson, lesson);
+
+        _db.Entry(existingLesson).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        return MapToLessonViewModel(existingLesson);
+    }
+
+    public LessonViewModel? PatchLesson(int id, LessonViewModel lesson)
+    {
+        var existingLesson = _db.Lessons
+            .FirstOrDefault(x => x.id == id && x.isDeleted == false);
+
+        if (existingLesson == null) return null;
+
+        existingLesson = UpdateLessonDetails(existingLesson, lesson);
+
+        _db.Entry(existingLesson).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        return MapToLessonViewModel(existingLesson);
+    }
+
+    public bool DeleteLesson(int id)
+    {
+        var lesson = _db.Lessons.FirstOrDefault(x => x.id == id && x.isDeleted == false);
+        if (lesson == null) return false;
+
+        lesson.isDeleted = true;
+        _db.Entry(lesson).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        return true;
+    }
+
+    private static TblLessons MapToLessonEntity(LessonViewModel lesson)
+    {
+        return new TblLessons
+        {
+            id = 0, // Auto-generated by the database
+            course_id = lesson.course_id,
+            title = lesson.title,
+            videoUrl = lesson.videoUrl,
+            lessonDetail = lesson.lessonDetail,
+            is_available = lesson.is_available,
+            created_at = lesson.created_at,
+            updated_at = lesson.updated_at,
+            isDeleted = false
+        };
+    }
+
+    private static LessonViewModel MapToLessonViewModel(TblLessons lesson)
+    {
+        return new LessonViewModel
+        {
+            id = lesson.id,
+            course_id = lesson.course_id,
+            title = lesson.title,
+            videoUrl = lesson.videoUrl,
+            lessonDetail = lesson.lessonDetail,
+            is_available = lesson.is_available,
+            created_at = lesson.created_at,
+            updated_at = lesson.updated_at,
+            isDeleted = lesson.isDeleted
+        };
+    }
+
+    private static TblLessons UpdateLessonDetails(TblLessons existingLesson, LessonViewModel lesson)
+    {
+        existingLesson.title = lesson.title ?? existingLesson.title;
+        existingLesson.videoUrl = lesson.videoUrl ?? existingLesson.videoUrl;
+        existingLesson.lessonDetail = lesson.lessonDetail ?? existingLesson.lessonDetail;
+        existingLesson.is_available = lesson.is_available;
+        existingLesson.updated_at = DateTime.UtcNow;
+
+        return existingLesson;
     }
 }

@@ -1,15 +1,9 @@
-﻿using FluentValidation;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.Domain.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LearningManagementSystem.Domain.Services.AuthServices.Validators;
 
-namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
+public class RegistrationValidator : AbstractValidator<UsersViewModels>
 {
-    public class RegistrationValidator : AbstractValidator<UsersViewModels>
+    private readonly AppDbContext _context;
+    public RegistrationValidator(AppDbContext context)
     {
         private readonly AppDbContext _context;
         public RegistrationValidator(AppDbContext context)
@@ -63,21 +57,19 @@ namespace LearningManagementSystem.Domain.Services.AuthServices.Validators
 
         }
 
-        private bool BeUniqueUsername(string username)
-        {
-            return !_context.Users.Any(u => u.username == username);
-        }
-
-        private bool BeUniqueEmail(string email)
-        {
-            return !_context.Users.Any(u => u.email == email);
-        }
-
-        private bool BeValidAge(DateOnly dob)
-        {
-            var age = DateTime.Today.Year - dob.Year;
-            return age >= 13;
-        }
+    private bool BeUniqueUsername(string username)
+    {
+        return !_context.Users.Any(u => u.username == username);
     }
 
+    private bool BeUniqueEmail(string email)
+    {
+        return !_context.Users.Any(u => u.email == email);
+    }
+
+    private bool BeValidAge(DateOnly dob)
+    {
+        var age = DateTime.Today.Year - dob.Year;
+        return age >= 13;
+    }
 }

@@ -1,9 +1,3 @@
-using System;
-using FluentValidation;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.Domain.Services.UserServices.Requests;
-using Org.BouncyCastle.Math.EC.Rfc7748;
-
 namespace LearningManagementSystem.Domain.Services.UserServices.Validators;
 
 public class UserValidator : AbstractValidator<UserRequest>

@@ -1,36 +1,3 @@
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using LearningManagementSystem.DataBase.Data;
-using LearningManagementSystem.Domain.Services.AuthServices;
-using LearningManagementSystem.Domain.Services.AuthServices.Requests;
-using LearningManagementSystem.Domain.Services.AuthServices.Validators;
-using LearningManagementSystem.Domain.Services.CategoryServices;
-using LearningManagementSystem.Domain.Services.LessonServices;
-using LearningManagementSystem.Domain.Services.UsersServices;
-
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using LearningManagementSystem.Domain.Validators;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Text;
-using System.Threading.Tasks.Dataflow;
-
-using LearningManagementSystem.Domain.Services.ResponseService;
-using LearningManagementSystem.Domain.Services.UserServices;
-
-using LearningManagementSystem.Domain.Services.StudentsServieces;
-using LearningManagementSystem.Domain.Services.CourseService;
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add CORS service configuration
@@ -82,7 +49,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
@@ -210,8 +177,8 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
-// I add some folders in here
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
@@ -219,12 +186,15 @@ builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+
 builder.Services.AddScoped<ICourseService, CourseService>();
 
+builder.Services.AddScoped<ISocial_linksRepository, Social_linksRepository>();
 
-//builder.Services.AddTransient<IUserRepository, UserRepository>();
-//builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
+builder.Services.AddScoped<IUploadImageRepository, UploadImageRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {
