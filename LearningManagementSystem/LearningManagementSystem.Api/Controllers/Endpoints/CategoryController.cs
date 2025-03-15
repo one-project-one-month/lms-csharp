@@ -1,5 +1,6 @@
 ﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
+[Authorize(Roles = "Admins")]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : BaseController
