@@ -1,19 +1,17 @@
-using FluentValidation.AspNetCore;
-using LearningManagementSystem.Domain.Services.AuthServices;
-using LearningManagementSystem.Domain.Services.AuthServices.Requests;
-using LearningManagementSystem.Domain.Services.AuthServices.Validators;
-using LearningManagementSystem.Domain.Services.UploadImage;
-using LearningManagementSystem.Domain.Validators;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-
-
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Add CORS service configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 //JWT Services
 builder.Services.AddAuthentication(options =>
@@ -33,7 +31,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
@@ -136,17 +134,27 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
-builder.Services.AddControllers().AddFluentValidation(fv =>
-{
-    fv.RegisterValidatorsFromAssemblyContaining<RegistrationValidator>();
-    fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
-});
+// builder.Services.AddControllers().AddFluentValidation(fv =>
+// {
+//     fv.RegisterValidatorsFromAssemblyContaining<RegistrationValidator>();
+//     fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
+//     fv.RegisterValidatorsFromAssemblyContaining<RefreshTokenValidator>();
+// });
+
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<RegistrationValidator>()
+    .AddValidatorsFromAssemblyContaining<LoginRequestValidator>()
+    .AddValidatorsFromAssemblyContaining<RefreshTokenValidator>();
 
 builder.Services.AddScoped<IValidator<UsersViewModels>, RegistrationValidator>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
+builder.Services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenValidator>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IResponseService, ResponseService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
@@ -219,6 +227,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll"); // Enable CORS policy and make sure to add before UseRouting
 app.UseRouting();
 
 //app.UseAuthorization();
