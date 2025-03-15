@@ -1,10 +1,11 @@
-namespace LearningManagementSystem.Api.Controllers.UserEndpoints;
-
-[Route("api/[controller]")]
-[ApiController]
-public class UsersEndpoint : ControllerBase
+namespace LearningManagementSystem.Api.Controllers.UserEndpoints
 {
-    private readonly AppDbContext _context;
+    [Authorize]
+    [Route("api/Users")]
+    [ApiController]
+    public class UsersEndpoint : ControllerBase
+    {
+        private readonly AppDbContext _context;
 
     private readonly IUserServices _userServices;
 
@@ -33,57 +34,41 @@ public class UsersEndpoint : ControllerBase
         }
         return _responseService.Response(result);
     }
-
-    [HttpGet("instructor")]
-    public async Task<IActionResult> InstructorEndpoint(int id)
-    {
-        var instructor = await _userServices.GetInstructor(id);
-        if (instructor == null)
+        [HttpGet("getInstructor/{id}")]
+        public async Task<IActionResult> InstructorEndpoint(int id)
+  
         {
             return NotFound("Instructor not found");
         }
         return Ok(instructor);
     }
 
-    [HttpGet("student")]
-    public async Task<IActionResult> StudentsEndpoint(int id)
-    {
-        var student = await _userServices.GetStudent(id);
-        if (student is null)
+        [HttpGet("getStudent/{id}")]
+        public async Task<IActionResult> StudentsEndpoint(int id)
+
         {
             return NotFound("Student not found");
         }
         return Ok(student);
     }
+        [HttpGet("getInstructors")]
+        public async Task<IActionResult> InstructorsEndpoint()
 
-    [HttpGet("instructors")]
-    public async Task<IActionResult> InstructorsEndpoint()
-    {
-        var instructors = await _userServices.GetInstructors();
-        if (instructors.Data == null || !instructors.Data.Any())
         {
             return NotFound("No instructors found");
         }
         return _responseService.Response(instructors);
     }
 
-    [HttpGet("students")]
-    public async Task<IActionResult> StudentsEndpoint()
-    {
-        var students = await _userServices.GetStudents();
-        if (students.Data == null || !students.Data.Any())
+        [HttpGet("getStudents")]
+        public async Task<IActionResult> StudentsEndpoint()
         {
             return NotFound("No students found");
         }
 
-        return _responseService.Response(students);
-    }
+        [HttpPatch("patch/{id}")]
+        public async Task<IActionResult> PatchUser(int id, UserRequest user)
 
-    [HttpPatch("uppdate/{id}")]
-    public async Task<IActionResult> PatchUser(int id, UserRequest user)
-    {
-        var validationResult = await _userRequestValidator.ValidateAsync(user);
-        if (!validationResult.IsValid)
         {
             return _responseService.Response(
                 Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
@@ -101,44 +86,46 @@ public class UsersEndpoint : ControllerBase
         var validationResult = await _userRequestValidator.ValidateAsync(user);
         if (!validationResult.IsValid)
         {
-            return _responseService.Response(
-                Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
-            );
-        }
+
+            // First check if user is null
+            if (user == null)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError("User request cannot be null")
+                );
+            }
+            var validationResult = await _userRequestValidator.ValidateAsync(user);
+            if (!validationResult.IsValid)
+            {
+                return _responseService.Response(
+                    Response<object>.ValidationError(validationResult.Errors.First().ErrorMessage)
+                );
+            }
 
         var result = await _userServices.UpdateUser(id, user);
 
         return _responseService.Response(result);
     }
 
-    [HttpGet("users")]
-    public async Task<IActionResult> GetUsers()
-    {
-        var users = await _userServices.GetUsers();
-        if (users.Data == null || !users.Data.Any())
+        [HttpGet("getUsers")]
+        public async Task<IActionResult> GetUsers()
         {
             return _responseService.Response(users);
         }
 
-        return _responseService.Response(users);
-    }
 
-    [HttpGet("user")]
-    public async Task<IActionResult> GetUser(int id)
-    {
-        var user = await _userServices.GetUser(id);
-        if (user.Data is null)
+        [HttpGet("getUser/{id}")]
+        public async Task<IActionResult> GetUser(int id)
+
         {
             return _responseService.Response(user);
         }
         return _responseService.Response(user);
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var result = await _userServices.DeleteUser(id);
-        if (result is null)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+   
         {
             return NotFound("User not found");
         }
