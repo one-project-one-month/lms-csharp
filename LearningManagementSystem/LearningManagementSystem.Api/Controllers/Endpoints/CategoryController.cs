@@ -1,97 +1,75 @@
-﻿using LearningManagementSystem.DataBase.Models;
-using LearningManagementSystem.Domain.Services.CategoryServices;
-using LearningManagementSystem.Domain.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-//using LearningManagementSystem.DataBase.Migrations;
+﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
-namespace LearningManagementSystem.Api.Controllers.Endpoints
+[Route("api/[controller]")]
+[ApiController]
+public class CategoryController : BaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoryController : BaseController
+    private readonly ICategoryRepository _categoryRepository;
+
+    public CategoryController(ICategoryRepository categoryRepository)
     {
-        private readonly ICategoryRepository _categoryRepository;
+        _categoryRepository = categoryRepository;
+    }
 
-        public CategoryController(ICategoryRepository categoryRepository)
+    [HttpGet("GetCategories")]
+    public async Task<IActionResult> GetCategories()
+    {
+        var items = await _categoryRepository.GetCategories();
+
+        return Ok(items);
+    }
+
+    [HttpGet("GetCategory")]
+    public async Task<IActionResult> GetCategory(int id)
+    {
+        var items = await _categoryRepository.GetCategory(id);
+
+        return Ok(items);
+    }
+
+    [HttpPost("CreateCategory")]
+    public async Task<IActionResult> CreateCategory(CategoryViewModels user)
+    {
+        var items = await _categoryRepository.CreateCategory(user);
+
+        return Ok(items);
+    }
+
+    [HttpPut("UpdateCategory")]
+    public async Task<IActionResult> UpdateCategory(int id, CategoryViewModels user)
+    {
+
+        var item = await _categoryRepository.UpdateCategory(id, user);
+
+        if (item is null)
         {
-            _categoryRepository = categoryRepository;
+            return BadRequest("Don`t have data");
         }
+        return Ok(item);
+    }
 
-        [HttpGet("GetCategories")]
-        public IActionResult GetCategories()
+    [HttpPatch("PatchCategory")]
+    public async Task<IActionResult> PatchCategory(int id, CategoryViewModels user)
+    {
+
+        var item = await _categoryRepository.PatchCategory(id, user);
+
+        if (item is null)
         {
-            var items = _categoryRepository.GetCategories();
-
-            return Ok(items);
+            return BadRequest("Don`t have data");
         }
+        return Ok(item);
+    }
 
-        [HttpGet("GetCategory/{id}")]
-        public IActionResult GetCategory(int id)
+    [HttpDelete("DeleteCategory")]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        var item = await _categoryRepository.DeleteCategory(id);
+
+        if (item is null)
         {
-            var items = _categoryRepository.GetCategory(id);
-
-            return Ok(items);
+            return BadRequest("Don`t have data");
         }
-
-        [HttpPost("CreateCategory")]
-        public IActionResult CreateCategory(CategoryViewModels user)
-        {
-            var items = _categoryRepository.CreateCategory(user);
-
-            return Ok(items);
-            //return Execute(items);
-        }
-
-        [HttpPut("UpdateCategory/{id}")]
-        public IActionResult UpdateCategory(int id, CategoryViewModels user)
-        {
-
-            var item = _categoryRepository.UpdateCategory(id, user);
-
-            // need to write reponse & request
-
-            if (item is null)
-            {
-                return BadRequest("Don`t have data");
-            }
-            return Ok(item);
-        }
-
-        [HttpPatch("PatchCategory/{id}")]
-        public IActionResult PatchCategory(int id, CategoryViewModels user)
-        {
-
-            var item = _categoryRepository.PatchCategory(id, user);
-
-            // need to write reponse & request
-
-            if (item is null)
-            {
-                return BadRequest("Don`t have data");
-            }
-            return Ok(item);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
-        {
-            var item = _categoryRepository.DeleteCategory(id);
-
-            if (item is null)
-            {
-                return BadRequest("Don`t have data");
-            }
-            return Ok("Deleting success");
-        }
-
-
-        [HttpPost("Token_Test")]
-        public IActionResult Token_Test(TblTokens tokens)
-        {
-            var items = _categoryRepository.TokensCreate(tokens);
-
-            return Ok(items);
-            //return Execute(items);
-        }
+        return Ok("Deleting success");
     }
 }
