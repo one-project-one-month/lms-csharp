@@ -8,6 +8,7 @@ using LearningManagementSystem.Domain.Services.AuthServices.Requests;
 using LearningManagementSystem.Domain.Services.AuthServices.Responses;
 using LearningManagementSystem.Domain.Services.AuthServices.Validators;
 using LearningManagementSystem.Domain.Services.ResponseService;
+using LearningManagementSystem.Domain.Services.UploadImage;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LearningManagementSystem.Domain.Services.AuthServices
@@ -17,12 +18,17 @@ namespace LearningManagementSystem.Domain.Services.AuthServices
         private readonly AppDbContext _db;
         private readonly IResponseService _responseService;
         private readonly AuthService _authService;
+        private readonly IUploadImageRepository _imageUpload;
 
-        public AuthRepository(AppDbContext db, IResponseService responseService, AuthService authService)
+        public AuthRepository(AppDbContext db,
+         IResponseService responseService,
+          AuthService authService,
+          IUploadImageRepository imageUpload)
         {
             _db = db;
             _responseService = responseService;
             _authService = authService;
+            _imageUpload = imageUpload;
         }
 
         public async Task<Response<RefreshTokenResponse>> RefreshToken(RefreshTokenRequest request)
@@ -203,7 +209,7 @@ namespace LearningManagementSystem.Domain.Services.AuthServices
             }
         }
 
-        private static TblUsers MapUser(UsersViewModels model, TblRoles role)
+        private TblUsers MapUser(UsersViewModels model, TblRoles role)
         {
             return new TblUsers
             {
@@ -213,7 +219,7 @@ namespace LearningManagementSystem.Domain.Services.AuthServices
                 phone = model.phone,
                 dob = model.dob,
                 address = model.address,
-                profile_photo = model.profile_photo,
+                profile_photo = _imageUpload.UploadImage(model.profile_photo),
                 role_id = role.id,
                 created_at = DateTime.UtcNow,
             };

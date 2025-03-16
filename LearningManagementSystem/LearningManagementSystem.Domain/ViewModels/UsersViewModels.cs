@@ -10,7 +10,8 @@ public class UsersViewModels
     public string phone { get; set; } = null!;
     public DateOnly dob { get; set; }
     public string address { get; set; } = null!;
-    public string profile_photo { get; set; } = null!;
+    // public string profile_photo { get; set; } = null!;
+    public IFormFile profile_photo { get; set; } = null!;
     public bool is_available { get; set; } = false;
     public DateTime created_at { get; set; }
     public DateTime? updated_at { get; set; }

@@ -1,5 +1,6 @@
 ﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
+[Authorize(Policy = "RequireWorkerRole")]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : BaseController

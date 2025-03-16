@@ -1,14 +1,13 @@
 namespace LearningManagementSystem.Api.Controllers.UserEndpoints;
 
+
 [Authorize]
 [Route("api/Users")]
 [ApiController]
 public class UsersEndpoint : ControllerBase
 {
     private readonly AppDbContext _context;
-
     private readonly IUserServices _userServices;
-
     private readonly IValidator<UserRequest> _userRequestValidator;
     private readonly IResponseService _responseService;
 
@@ -39,7 +38,7 @@ public class UsersEndpoint : ControllerBase
 
     [HttpGet("getInstructor/{id}")]
     public async Task<IActionResult> InstructorEndpoint(int id)
-    { 
+    {
         var instructor = await _userServices.GetInstructor(id);
         if (instructor == null)
         {
@@ -50,7 +49,7 @@ public class UsersEndpoint : ControllerBase
 
     [HttpGet("getStudent/{id}")]
     public async Task<IActionResult> StudentsEndpoint(int id)
-    { 
+    {
         var student = await _userServices.GetStudent(id);
         if (student is null)
         {
@@ -150,6 +149,6 @@ public class UsersEndpoint : ControllerBase
         }
         return Ok(result);
     }
-    
+
 }
 

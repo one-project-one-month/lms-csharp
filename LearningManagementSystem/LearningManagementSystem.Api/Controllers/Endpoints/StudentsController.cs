@@ -1,5 +1,6 @@
 ﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
+[Authorize(Roles = "Student")]
 [Route("api/[controller]")]
 [ApiController]
 

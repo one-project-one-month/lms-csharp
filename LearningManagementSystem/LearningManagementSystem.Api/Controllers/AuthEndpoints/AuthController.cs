@@ -6,37 +6,40 @@
     {
         private readonly IValidator<UsersViewModels> _registrationValidator;
         private readonly IValidator<LoginRequest> _loginValidator;
-        private readonly IConfiguration _configuration;
-        private readonly AuthService _authService;
+        // private readonly IConfiguration _configuration;
+        // private readonly AuthService _authService;
         private readonly AppDbContext _context;
 
-        private readonly IUserServices _userServices;
+        // private readonly IUserServices _userServices;
 
         private readonly IResponseService _responseService;
         private readonly IAuthRepository _authRepository;
+        // private readonly IUploadImageRepository _imageUpload;
         //private readonly ILogger _logger;
 
         public AuthController(
             IValidator<UsersViewModels> registrationValidator,
             IValidator<LoginRequest> loginValidator,
-            IConfiguration configuration,
-            AuthService authService,
+            // IConfiguration configuration,
+            // AuthService authService,
             AppDbContext context,
             IResponseService responseService,
-            IUserServices userServices,
+            // IUserServices userServices,
             IAuthRepository authRepository
+        // IUploadImageRepository imageUpload
         //ILogger logger
         )
         {
             _registrationValidator = registrationValidator;
             _loginValidator = loginValidator;
-            _configuration = configuration;
-            _authService = authService;
+            // _configuration = configuration;
+            // _authService = authService;
             _context = context;
             _responseService = responseService;
             //_logger = logger;
-            _userServices = userServices;
+            // _userServices = userServices;
             _authRepository = authRepository;
+            // _imageUpload = imageUpload;
         }
 
         #region test-endpoints Authorization
@@ -161,6 +164,7 @@
             );
         }
 
+        [Authorize]
         [HttpPost("refreshToken")]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
         {

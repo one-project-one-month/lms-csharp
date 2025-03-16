@@ -1,5 +1,6 @@
 ﻿namespace LearningManagementSystem.Api.Controllers.Endpoints;
 
+[Authorize(Policy = "RequireStudentRole")]
 [Route("api/[controller]")]
 [ApiController]
 public class EnrollmentController : ControllerBase
