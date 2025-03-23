@@ -26,7 +26,7 @@ Backend Repository ကို ဒီ Link(https://github.com/one-project-one-mont
 
 **Description**
 
-Learning Management System ကို ကိုလင်းရဲ့ ဦးဆောင်မှုဖြင့် စတင်ခဲ့ပြီး တစ်လအတွင်းပြီးနိုင်‌‌လောက်သည်အထိ scope သတ်မှတ်ခဲ့ပါတယ်။ LMS မှာက ကျောင်းသားများအနေနဲ Online Courses တွေကို အလွယ်တကူ Courses တွေရယူ Enrollment လုပ်နိုင်ပြီး လွယ်လွယ်ကူကူနဲ မြန်မြန်ဆန်ဆန် သင်ခန်းစာတွေ online ကနေစာလေ့လာနိုင်ရန်ရည်ရွယ်ပြီး ရေးသားထားတာပါသည်။
+Learning Management System ကို အားလုံးရေးချင်တဲ့ Projects များထဲမှ votes အဆုံးရခဲ့တဲ့ Project ဖြစ်ခဲ့တဲ့အတွက် ဒီ Project ကိုစတင်ခဲ့ပြီး တစ်လအတွင်းပြီးနိုင်‌‌လောက်သည်အထိ scope သတ်မှတ်ခဲ့ပါတယ်။ LMS မှာက ကျောင်းသားများအနေနဲ Online Courses တွေကို အလွယ်တကူ Courses တွေရယူ Enrollment လုပ်နိုင်ပြီး လွယ်လွယ်ကူကူနဲ မြန်မြန်ဆန်ဆန် သင်ခန်းစာတွေ online ကနေစာလေ့လာနိုင်ရန်ရည်ရွယ်ပြီး ရေးသားထားတာပါသည်။
 
 
 ### Roles
